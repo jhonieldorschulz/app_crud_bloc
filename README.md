@@ -500,10 +500,8 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 ## 👨‍💻 Autor
 
-**Seu Nome**
-- GitHub: [@seu-usuario](https://github.com/seu-usuario)
-- LinkedIn: [seu-perfil](https://linkedin.com/in/seu-perfil)
-- Email: seu-email@example.com
+**Jhoni Eldor Schulz**
+- Email: jhonieldorschulz@gmail.com
 
 ---
 
@@ -522,12 +520,12 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 ![Version](https://img.shields.io/badge/Version-1.0.0-blue)
 ![Coverage](https://img.shields.io/badge/Coverage-Em%20Progresso-yellow)
 
-**Última atualização:** Dezembro 2024
+**Última atualização:** Dezembro 2025
 
 ---
 
 <p align="center">
-  Feito com ❤️ usando Flutter
+  Feito com Habilidades Ninja modo Jiraya usando Flutter
 </p>
 
 <p align="center">
