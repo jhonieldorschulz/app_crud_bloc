@@ -33,5 +33,10 @@
   "selectLanguage": "Selecionar Idioma",
   "about": "Sobre",
   "version": "Versão",
-  "developer": "Desenvolvedor"
+  "developer": "Desenvolvedor",
+  "theme": "Tema",
+  "lightMode": "Modo Claro",
+  "darkMode": "Modo Escuro",
+  "appearance": "Aparência",
+  "loadingItems": "Carregando..."
 }

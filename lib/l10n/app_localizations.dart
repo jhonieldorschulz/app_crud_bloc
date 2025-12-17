@@ -303,6 +303,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Developer'**
   String get developer;
+
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// No description provided for @lightMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Mode'**
+  String get lightMode;
+
+  /// No description provided for @darkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get darkMode;
+
+  /// No description provided for @appearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearance;
+
+  /// No description provided for @loadingItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading items...'**
+  String get loadingItems;
 }
 
 class _AppLocalizationsDelegate

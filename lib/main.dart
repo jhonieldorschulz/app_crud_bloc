@@ -1,3 +1,7 @@
+import 'package:app_crud_bloc/core/theme/app_theme.dart';
+import 'package:app_crud_bloc/logic/theme/theme_bloc.dart';
+import 'package:app_crud_bloc/logic/theme/theme_event.dart';
+import 'package:app_crud_bloc/logic/theme/theme_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -25,8 +29,16 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<LocaleBloc>(
-          create: (context) => getIt<LocaleBloc>()..add(const LoadSavedLocaleEvent()),
+          create: (context) =>
+              getIt<LocaleBloc>()..add(const LoadSavedLocaleEvent()),
         ),
+
+        // ThemeBloc (Singleton) - NOVO!
+        BlocProvider<ThemeBloc>(
+          create: (context) =>
+              getIt<ThemeBloc>()..add(const LoadSavedThemeEvent()),
+        ),
+
         BlocProvider<ItemBloc>(
           create: (context) => getIt<ItemBloc>()..add(const LoadItemsEvent()),
         ),
@@ -38,26 +50,34 @@ class MyApp extends StatelessWidget {
             locale = state.locale;
           }
 
-          return MaterialApp.router(
-            title: 'CRUD App',
-            debugShowCheckedModeBanner: false,
-            routerConfig: AppRouter.router,
-            locale: locale,
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [
-              Locale('en'),
-              Locale('pt'),
-              Locale('es'),
-            ],
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-              useMaterial3: true,
-            ),
+          return BlocBuilder<ThemeBloc, ThemeState>(
+            builder: (context, themeState) {
+              bool isDark = false;
+              if (themeState is ThemeLoaded) {
+                isDark = themeState.isDark;
+              }
+
+              return MaterialApp.router(
+                title: 'CRUD App',
+                debugShowCheckedModeBanner: false,
+                routerConfig: AppRouter.router,
+                locale: locale,
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: const [
+                  Locale('en'),
+                  Locale('pt'),
+                  Locale('es'),
+                ],
+                theme: AppTheme.lightTheme,
+                darkTheme: AppTheme.darkTheme,
+                themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+              );
+            },
           );
         },
       ),

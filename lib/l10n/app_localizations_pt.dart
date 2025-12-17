@@ -109,4 +109,19 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get developer => 'Desenvolvedor';
+
+  @override
+  String get theme => 'Tema';
+
+  @override
+  String get lightMode => 'Modo Claro';
+
+  @override
+  String get darkMode => 'Modo Escuro';
+
+  @override
+  String get appearance => 'Aparência';
+
+  @override
+  String get loadingItems => 'Carregando...';
 }

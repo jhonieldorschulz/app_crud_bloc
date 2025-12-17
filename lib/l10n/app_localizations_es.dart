@@ -109,4 +109,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get developer => 'Desarrollador';
+
+  @override
+  String get theme => 'Tema';
+
+  @override
+  String get lightMode => 'Modo Claro';
+
+  @override
+  String get darkMode => 'Modo Oscuro';
+
+  @override
+  String get appearance => 'Apariencia';
+
+  @override
+  String get loadingItems => 'Cargando...';
 }
