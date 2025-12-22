@@ -131,28 +131,27 @@ class SettingsScreen extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (dialogContext) =>
-          AlertDialog(
-            title: Text(l10n.selectLanguage),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: locales.map((locale) {
-                return RadioListTile<Locale>(
-                  value: locale,
-                  groupValue: current,
-                  title: Text(_getLocaleName(locale)),
-                  onChanged: (value) {
-                    if (value != null) {
-                      context.read<LocaleBloc>().add(
-                        ChangeLocaleEvent(locale: value),
-                      );
-                      Navigator.pop(dialogContext);
-                    }
-                  },
-                );
-              }).toList(),
-            ),
-          ),
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.selectLanguage),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: locales.map((locale) {
+            return RadioListTile<Locale>(
+              value: locale,
+              groupValue: current,
+              title: Text(_getLocaleName(locale)),
+              onChanged: (value) {
+                if (value != null) {
+                  context.read<LocaleBloc>().add(
+                    ChangeLocaleEvent(locale: value),
+                  );
+                  Navigator.pop(dialogContext);
+                }
+              },
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 }
@@ -172,11 +171,7 @@ class _SectionHeader extends StatelessWidget {
       ),
       child: Text(
         title.toUpperCase(),
-        style: Theme
-            .of(context)
-            .textTheme
-            .labelSmall
-            ?.copyWith(
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
           fontWeight: FontWeight.w600,
           letterSpacing: 1.2,
         ),

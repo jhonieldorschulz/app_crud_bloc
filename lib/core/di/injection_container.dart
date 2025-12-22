@@ -1,8 +1,9 @@
+import 'package:app_crud_bloc/core/base/crud_bloc.dart';
+import 'package:app_crud_bloc/core/base/search_bloc.dart';
 import 'package:app_crud_bloc/logic/theme/theme_bloc.dart';
 import 'package:get_it/get_it.dart';
 import '../../data/database/app_database.dart';
 import '../../data/repositories/item_repository.dart';
-import '../../logic/item/item_bloc.dart';
 import '../../logic/locale/locale_bloc.dart';
 
 final getIt = GetIt.instance;
@@ -14,8 +15,14 @@ Future<void> setupDependencies() async {
     ItemRepository(database: getIt<AppDatabase>()),
   );
 
-  getIt.registerFactory<ItemBloc>(
-        () => ItemBloc(repository: getIt<ItemRepository>()),
+  getIt.registerFactory<CrudBloc<Item>>(
+        () => CrudBloc<Item>(
+      repository: getIt<ItemRepository>(),
+    ),
+  );
+
+  getIt.registerFactory<SearchBloc<Item>>(
+        () => SearchBloc<Item>(),
   );
 
   getIt.registerSingleton<LocaleBloc>(LocaleBloc());

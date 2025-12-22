@@ -1,83 +1,128 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../presentation/screens/item/item_list_screen.dart';
-import '../../presentation/screens/item/item_detail_screen.dart';
-import '../../presentation/screens/item/item_form_screen.dart';
-import '../../presentation/screens/settings/settings_screen.dart';
+
 import 'route_names.dart';
+import '../../presentation/screens/item/item_list_screen.dart';
+import '../../presentation/screens/item/item_form_screen.dart';
+import '../../presentation/screens/item/item_detail_screen.dart';
+import '../../presentation/screens/settings/settings_screen.dart'; // ✅ PRESERVADO
 
-enum FormMode { create, edit }
-
+/// AppRouter - Configuração de rotas com GoRouter
 class AppRouter {
-  static final router = GoRouter(
-    initialLocation: RouteNames.home,
+  AppRouter._();
+
+  // NavigatorKey global para preservar estado de navegação
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  static final GoRouter router = GoRouter(
+    navigatorKey: navigatorKey,
+    initialLocation: RouteNames.items,
+    debugLogDiagnostics: true,
+
     routes: [
-      // ========== HOME ==========
+      // ========================================
+      // HOME (Redireciona para Items)
+      // ========================================
       GoRoute(
         path: RouteNames.home,
-        builder: (context, state) => const ItemListScreen(),
+        redirect: (context, state) => RouteNames.items,
       ),
 
-      // ========== SETTINGS ==========
+      // ========================================
+      // ITEMS - Lista
+      // ========================================
       GoRoute(
-        path: RouteNames.settings,
-        builder: (context, state) => const SettingsScreen(),
-      ),
-
-      // ========== ITEM CREATE (ANTES do :id!) ==========
-      /// IMPORTANTE: /item/new DEVE vir ANTES de /item/:id
-      /// GoRouter testa rotas na ORDEM declarada
-      /// Se :id vier primeiro, "new" será capturado como ID
-      GoRoute(
-        path: RouteNames.itemCreate,  // '/item/new'
-        builder: (context, state) => const ItemFormScreen(
-          mode: FormMode.create,
+        path: RouteNames.items,
+        name: 'items',
+        pageBuilder: (context, state) => MaterialPage(
+          key: state.pageKey,
+          child: const ItemListScreen(),
         ),
       ),
 
-      // ========== ITEM DETAIL (DEPOIS do /new!) ==========
-      /// Agora /item/new já foi tratado acima
-      /// Apenas IDs numéricos chegam aqui
+      // ========================================
+      // ITEMS - Criar
+      // ========================================
       GoRoute(
-        path: RouteNames.itemDetail,  // '/item/:id'
-        builder: (context, state) {
-          final idParam = state.pathParameters['id'];
-
-          // Validar que é número
-          if (idParam == null) {
-            throw Exception('Item ID é obrigatório');
-          }
-
-          final id = int.tryParse(idParam);
-          if (id == null) {
-            throw Exception('ID inválido: $idParam');
-          }
-
-          return ItemDetailScreen(itemId: id);
-        },
+        path: RouteNames.itemCreate,
+        name: 'item-create',
+        pageBuilder: (context, state) => MaterialPage(
+          key: state.pageKey,
+          child: const ItemFormScreen(itemId: null), // ✅ CORRETO
+        ),
       ),
 
-      // ========== ITEM EDIT ==========
+      // ========================================
+      // ITEMS - Detalhes
+      // ========================================
       GoRoute(
-        path: RouteNames.itemEdit,  // '/item/:id/edit'
-        builder: (context, state) {
-          final idParam = state.pathParameters['id'];
-
-          if (idParam == null) {
-            throw Exception('Item ID é obrigatório');
-          }
-
-          final id = int.tryParse(idParam);
-          if (id == null) {
-            throw Exception('ID inválido: $idParam');
-          }
-
-          return ItemFormScreen(
-            mode: FormMode.edit,
-            itemId: id,
+        path: RouteNames.itemDetail,
+        name: 'item-detail',
+        pageBuilder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return MaterialPage(
+            key: state.pageKey,
+            child: ItemDetailScreen(itemId: id), // ✅ CORRETO
           );
         },
       ),
+
+      // ========================================
+      // ITEMS - Editar
+      // ========================================
+      GoRoute(
+        path: RouteNames.itemEdit,
+        name: 'item-edit',
+        pageBuilder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return MaterialPage(
+            key: state.pageKey,
+            child: ItemFormScreen(itemId: id), // ✅ CORRETO
+          );
+        },
+      ),
+
+      // ========================================
+      // SETTINGS (✅ PRESERVADO!)
+      // ========================================
+      GoRoute(
+        path: RouteNames.settings,
+        name: 'settings',
+        pageBuilder: (context, state) => MaterialPage(
+          key: state.pageKey,
+          child: const SettingsScreen(), // ✅ PRESERVADO
+        ),
+      ),
     ],
+
+    // ========================================
+    // ERROR PAGE
+    // ========================================
+    errorBuilder: (context, state) => Scaffold(
+      appBar: AppBar(title: const Text('Error')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
+            const SizedBox(height: 16),
+            Text(
+              'Page not found',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              state.uri.toString(),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => context.go(RouteNames.items),
+              child: const Text('Go to Home'),
+            ),
+          ],
+        ),
+      ),
+    ),
   );
 }

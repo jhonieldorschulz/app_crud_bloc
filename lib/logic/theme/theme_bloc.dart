@@ -25,17 +25,25 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   /// Alternar tema
   Future<void> _onToggle(Emitter<ThemeState> emit) async {
     final currentState = state;
-
+    
+    // Se ainda não foi carregado, carregar primeiro
+    bool currentIsDark = false;
     if (currentState is ThemeLoaded) {
-      final newIsDark = !currentState.isDark;
-
-      // Salvar preferência
+      currentIsDark = currentState.isDark;
+    } else {
+      // Carregar do SharedPreferences se ainda não foi carregado
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_key, newIsDark);
-
-      // Emitir novo estado
-      emit(ThemeLoaded(isDark: newIsDark));
+      currentIsDark = prefs.getBool(_key) ?? false;
     }
+
+    final newIsDark = !currentIsDark;
+
+    // Salvar preferência
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_key, newIsDark);
+
+    // Emitir novo estado
+    emit(ThemeLoaded(isDark: newIsDark));
   }
 
   /// Carregar tema salvo
