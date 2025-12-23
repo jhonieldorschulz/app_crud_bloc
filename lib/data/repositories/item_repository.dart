@@ -97,24 +97,17 @@ class ItemRepository implements BaseRepository<Item> {
   }
 
   @override
+  @override
   Future<List<Item>> search(String query) async {
-    try {
-      final allItems = await getAll();
+    final allItems = await getAll();
+    final lowerQuery = query.toLowerCase();
 
-      if (query.trim().isEmpty) {
-        return allItems;
-      }
+    return allItems.where((item) {
+      final titleMatch = item.title.toLowerCase().contains(lowerQuery);
+      final descMatch = item.description.toLowerCase().contains(lowerQuery);
 
-      final lowerQuery = query.toLowerCase().trim();
-
-      return allItems.where((item) {
-        // ✅ USA EXTENSION AQUI!
-        return item.displayTitle.toLowerCase().contains(lowerQuery) ||
-            (item.displayDescription?.toLowerCase().contains(lowerQuery) ?? false);
-      }).toList();
-    } catch (e) {
-      throw Exception('Failed to search items: $e');
-    }
+      return titleMatch || descMatch;
+    }).toList();
   }
 
   /// Validar dados do item (privado)

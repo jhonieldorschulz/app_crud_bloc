@@ -1,5 +1,5 @@
 import 'package:app_crud_bloc/core/base/crud_bloc.dart';
-import 'package:app_crud_bloc/core/base/search_bloc.dart';
+import 'package:app_crud_bloc/logic/item/item_list_cubit.dart';
 import 'package:app_crud_bloc/logic/theme/theme_bloc.dart';
 import 'package:get_it/get_it.dart';
 import '../../data/database/app_database.dart';
@@ -21,8 +21,8 @@ Future<void> setupDependencies() async {
     ),
   );
 
-  getIt.registerFactory<SearchBloc<Item>>(
-        () => SearchBloc<Item>(),
+  getIt.registerFactory<ItemListCubit>(
+        () => ItemListCubit(),
   );
 
   getIt.registerSingleton<LocaleBloc>(LocaleBloc());

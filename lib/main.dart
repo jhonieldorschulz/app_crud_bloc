@@ -7,7 +7,6 @@ import 'package:get_it/get_it.dart';
 import 'core/theme/app_theme.dart';
 import 'core/base/crud_bloc.dart';
 import 'core/base/crud_event.dart';
-import 'core/base/search_bloc.dart';
 import 'core/di/injection_container.dart';
 import 'core/routing/app_router.dart';
 import 'data/database/app_database.dart';
@@ -35,9 +34,7 @@ class MyApp extends StatelessWidget {
           create: (context) => getIt<CrudBloc<Item>>()
             ..add(const LoadAllEvent<Item>()),
         ),
-        BlocProvider<SearchBloc<Item>>(
-          create: (context) => getIt<SearchBloc<Item>>(),
-        ),
+
 
         // ✅ Theme BLoC - Carregar tema salvo ao iniciar
         BlocProvider<ThemeBloc>(

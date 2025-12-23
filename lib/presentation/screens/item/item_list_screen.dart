@@ -6,208 +6,98 @@ import 'package:go_router/go_router.dart';
 import '../../../core/base/crud_bloc.dart';
 import '../../../core/base/crud_event.dart';
 import '../../../core/base/crud_state.dart';
-import '../../../core/base/search_bloc.dart';
-import '../../../core/base/search_event.dart';
-import '../../../core/base/search_state.dart';
 import '../../../core/routing/route_names.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/database/app_database.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../logic/item/item_list_cubit.dart';
+import '../../../logic/item/item_list_state.dart';
 
 class ItemListScreen extends StatelessWidget {
   const ItemListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider<ItemListCubit>(
+      create: (_) => ItemListCubit(),
+      child: const _ItemListView(),
+    );
+  }
+}
+
+/// 🔁 Escuta o CrudBloc e sincroniza a listagem
+class _ItemListView extends StatelessWidget {
+  const _ItemListView();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<CrudBloc<Item>, CrudState<Item>>(
+      listener: (context, state) {
+        if (state is CrudLoaded<Item>) {
+          context.read<ItemListCubit>().setItems(state.entities);
+        }
+      },
+      child: const _Scaffold(),
+    );
+  }
+}
+
+/// 🧱 Estrutura visual
+class _Scaffold extends StatelessWidget {
+  const _Scaffold();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      // ✅ AppBar com menu
       appBar: AppBar(
         leading: Builder(
           builder: (context) => IconButton(
             icon: const Icon(Icons.menu),
             onPressed: () => Scaffold.of(context).openDrawer(),
-            tooltip: 'Menu',
           ),
         ),
-        title: Builder(
-          builder: (context) {
-            final l10n = AppLocalizations.of(context)!;
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.description_outlined,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: AppTheme.space8),
-                Text(l10n.itemList),
-              ],
-            );
-          },
-        ),
-        actions: [
-          // ✅ Settings button
-          Builder(
-            builder: (context) {
-              final l10n = AppLocalizations.of(context)!;
-              return IconButton(
-                icon: const Icon(Icons.settings_outlined),
-                onPressed: () => context.push(RouteNames.settings),
-                tooltip: l10n.settings,
-              );
-            },
-          ),
-          Builder(
-            builder: (context) {
-              final l10n = AppLocalizations.of(context)!;
-              return IconButton(
-                icon: const Icon(Icons.delete_sweep),
-                onPressed: () => _showDeleteAllDialog(context),
-                tooltip: l10n.deleteAll,
-              );
-            },
-          ),
-        ],
-      ),
-
-      // ✅ Drawer (Menu lateral)
-      drawer: AppNavigationDrawer(
-        currentRoute: RouteNames.items,
-      ),
-
-      // Body com busca funcional
-      body: BlocListener<CrudBloc<Item>, CrudState<Item>>(
-        listener: (context, state) {
-          // Sincronizar SearchBloc quando CrudBloc carregar dados
-          if (state is CrudLoaded<Item>) {
-            context.read<SearchBloc<Item>>().add(
-              UpdateAllEntitiesEvent<Item>(state.entities),
-            );
-          }
-        },
-        child: Column(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            const _SearchBar(),
-            const _FilterChips(),
-            Expanded(
-              child: BlocBuilder<CrudBloc<Item>, CrudState<Item>>(
-                builder: (context, crudState) {
-                  if (crudState is CrudLoading<Item>) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (crudState is CrudLoaded<Item>) {
-                    // Garantir que SearchBloc tenha os dados mesmo se não foi sincronizado ainda
-                    final searchBloc = context.read<SearchBloc<Item>>();
-                    if (searchBloc.state.allEntities.isEmpty && crudState.entities.isNotEmpty) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        searchBloc.add(UpdateAllEntitiesEvent<Item>(crudState.entities));
-                      });
-                    }
-
-                    // Usar SearchBloc para obter itens filtrados
-                    return BlocBuilder<SearchBloc<Item>, SearchState<Item>>(
-                      builder: (context, searchState) {
-                        // Se SearchBloc ainda não tem dados, usar do CrudBloc temporariamente
-                        final items = searchState.filteredEntities.isNotEmpty
-                            ? searchState.filteredEntities
-                            : (searchState.isSearching ? [] : crudState.entities);
-
-                        final l10n = AppLocalizations.of(context)!;
-                        
-                        // Estado: lista vazia (sem busca)
-                        if (items.isEmpty && !searchState.isSearching) {
-                          return Center(
-                            child: Text(l10n.tapToAddFirst),
-                          );
-                        }
-
-                        // Estado: busca sem resultados
-                        if (searchState.hasNoResults) {
-                          return Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.search_off,
-                                  size: 64,
-                                  color: AppTheme.grey400,
-                                ),
-                                const SizedBox(height: AppTheme.space16),
-                                Text(
-                                  l10n.noItemsFound,
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                                const SizedBox(height: AppTheme.space8),
-                                Text(
-                                  l10n.retry,
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: AppTheme.grey600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-
-                        // Estado: mostrar resultados filtrados
-                        return ListView.builder(
-                          padding: const EdgeInsets.all(AppTheme.space8),
-                          itemCount: items.length,
-                          itemBuilder: (context, index) {
-                            final item = items[index];
-                            return _ItemCard(item: item);
-                          },
-                        );
-                      },
-                    );
-                  }
-
-                  return const Center(child: Text('Something went wrong'));
-                },
-              ),
+            Icon(
+              Icons.description_outlined,
+              color: Theme.of(context).colorScheme.primary,
             ),
+            const SizedBox(width: AppTheme.space8),
+            Text(l10n.itemList),
           ],
         ),
-      ),
-
-      // ✅ FAB
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push(RouteNames.itemCreate), // ✅ CORRETO
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  void _showDeleteAllDialog(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.confirmDeleteAllTitle),
-        content: Text(l10n.confirmDeleteAllMessage),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l10n.cancel),
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () => context.push(RouteNames.settings),
+            tooltip: l10n.settings,
           ),
-          TextButton(
-            onPressed: () {
-              context.read<CrudBloc<Item>>().add(
-                const DeleteAllEvent<Item>(),
-              );
-              Navigator.pop(dialogContext);
-            },
-            style: TextButton.styleFrom(foregroundColor: AppTheme.errorColor),
-            child: Text(l10n.deleteAll),
+          IconButton(
+            icon: const Icon(Icons.delete_sweep),
+            onPressed: () => _showDeleteAllDialog(context),
+            tooltip: l10n.deleteAll,
           ),
         ],
+      ),
+      drawer: AppNavigationDrawer(currentRoute: RouteNames.items),
+      body: Column(
+        children: const [
+          _SearchBar(),
+          Expanded(child: _ItemListBody()),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.push(RouteNames.itemCreate),
+        child: const Icon(Icons.add),
       ),
     );
   }
 }
 
-// Widgets _SearchBar e _FilterChips (manter existentes)
+/// 🔍 Busca simples (estado visual)
 class _SearchBar extends StatefulWidget {
   const _SearchBar();
 
@@ -216,7 +106,7 @@ class _SearchBar extends StatefulWidget {
 }
 
 class _SearchBarState extends State<_SearchBar> {
-  final TextEditingController _controller = TextEditingController();
+  final _controller = TextEditingController();
 
   @override
   void dispose() {
@@ -227,38 +117,33 @@ class _SearchBarState extends State<_SearchBar> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return BlocBuilder<SearchBloc<Item>, SearchState<Item>>(
+
+    return BlocBuilder<ItemListCubit, ItemListState>(
       builder: (context, state) {
-        // Sincronizar controller com o estado da busca
-        if (_controller.text != state.query) {
-          _controller.text = state.query;
-        }
+        final isSearching = state is ItemListLoaded && state.isSearching;
 
         return Padding(
           padding: const EdgeInsets.all(AppTheme.space16),
           child: TextField(
             controller: _controller,
             decoration: InputDecoration(
-              hintText: l10n.itemList, // Usar tradução
+              hintText: l10n.search,
               prefixIcon: const Icon(Icons.search),
-              suffixIcon: state.isSearching
+              suffixIcon: isSearching
                   ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        _controller.clear();
-                        context.read<SearchBloc<Item>>().add(
-                          const ClearSearchEvent<Item>(),
-                        );
-                      },
-                      tooltip: l10n.cancel,
-                    )
+                icon: const Icon(Icons.clear),
+                onPressed: () {
+                  _controller.clear();
+                  context.read<ItemListCubit>().clearSearch();
+                },
+              )
                   : null,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             onChanged: (value) {
-              // Disparar evento de busca conforme digita
-              context.read<SearchBloc<Item>>().add(
-                UpdateSearchQueryEvent<Item>(value),
-              );
+              context.read<ItemListCubit>().search(value);
             },
           ),
         );
@@ -267,16 +152,70 @@ class _SearchBarState extends State<_SearchBar> {
   }
 }
 
-class _FilterChips extends StatelessWidget {
-  const _FilterChips();
+/// 📋 Corpo da listagem
+class _ItemListBody extends StatelessWidget {
+  const _ItemListBody();
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(); // Implementar filtros
+    final l10n = AppLocalizations.of(context)!;
+
+    return BlocBuilder<ItemListCubit, ItemListState>(
+      builder: (context, state) {
+        if (state is ItemListInitial || state is ItemListLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is ItemListLoaded) {
+          // Lista vazia (sem items cadastrados)
+          if (state.isEmpty) {
+            return Center(child: Text(l10n.tapToAddFirst));
+          }
+
+          // Busca sem resultados
+          if (state.hasNoResults) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.search_off,
+                    size: 64,
+                    color: AppTheme.grey400,
+                  ),
+                  const SizedBox(height: AppTheme.space16),
+                  Text(
+                    l10n.noItemsFound,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: AppTheme.space8),
+                  Text(
+                    'Busca: "${state.searchText}"',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            );
+          }
+
+          // Mostrar lista
+          return ListView.builder(
+            padding: const EdgeInsets.all(AppTheme.space8),
+            itemCount: state.visibleItems.length,
+            itemBuilder: (context, index) {
+              final item = state.visibleItems[index];
+              return _ItemCard(item: item);
+            },
+          );
+        }
+
+        return const SizedBox();
+      },
+    );
   }
 }
 
-/// Card de item com ações (Visualizar, Editar, Deletar)
+/// 📇 Card do item (simplificado)
 class _ItemCard extends StatelessWidget {
   final Item item;
 
@@ -289,126 +228,70 @@ class _ItemCard extends StatelessWidget {
         horizontal: AppTheme.space8,
         vertical: AppTheme.space4,
       ),
-      child: InkWell(
-        onTap: () => context.push(RouteNames.itemDetailPath(item.id!)),
-        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.space16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Título e ações
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Ícone do item
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: AppTheme.itemsColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
-                    ),
-                    child: Icon(
-                      Icons.description_outlined,
-                      color: AppTheme.itemsColor,
-                      size: AppTheme.iconSizeMedium,
-                    ),
-                  ),
-                  const SizedBox(width: AppTheme.space12),
-                  
-                  // Título e descrição
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.title,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: AppTheme.space4),
-                        Text(
-                          item.description,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppTheme.grey600,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                  
-                  // Menu de ações
-                  PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert),
-                    onSelected: (value) => _handleAction(context, value),
-                    itemBuilder: (context) {
-                      final l10n = AppLocalizations.of(context)!;
-                      return [
-                        PopupMenuItem(
-                          value: 'view',
-                          child: Row(
-                            children: [
-                              const Icon(Icons.visibility_outlined, size: 20),
-                              const SizedBox(width: AppTheme.space8),
-                              Text(l10n.view),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'edit',
-                          child: Row(
-                            children: [
-                              const Icon(Icons.edit_outlined, size: 20),
-                              const SizedBox(width: AppTheme.space8),
-                              Text(l10n.edit),
-                            ],
-                          ),
-                        ),
-                        const PopupMenuDivider(),
-                        PopupMenuItem(
-                          value: 'delete',
-                          child: Row(
-                            children: [
-                              const Icon(Icons.delete_outline, size: 20, color: AppTheme.errorColor),
-                              const SizedBox(width: AppTheme.space8),
-                              Text(l10n.delete, style: const TextStyle(color: AppTheme.errorColor)),
-                            ],
-                          ),
-                        ),
-                      ];
-                    },
-                  ),
-                ],
-              ),
-              
-              const SizedBox(height: AppTheme.space12),
-              
-              // Data de criação
-              Row(
-                children: [
-                  Icon(
-                    Icons.calendar_today_outlined,
-                    size: AppTheme.iconSizeSmall,
-                    color: AppTheme.grey500,
-                  ),
-                  const SizedBox(width: AppTheme.space4),
-                  Text(
-                    _formatDate(item.createdAt),
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppTheme.grey500,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+      child: ListTile(
+        leading: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: AppTheme.itemsColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+          ),
+          child: Icon(
+            Icons.description_outlined,
+            color: AppTheme.itemsColor,
           ),
         ),
+        title: Text(
+          item.title,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text(
+          item.description,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: PopupMenuButton<String>(
+          onSelected: (value) => _handleAction(context, value),
+          itemBuilder: (context) {
+            final l10n = AppLocalizations.of(context)!;
+            return [
+              PopupMenuItem(
+                value: 'view',
+                child: Row(
+                  children: [
+                    const Icon(Icons.visibility_outlined, size: 20),
+                    const SizedBox(width: 8),
+                    Text(l10n.view),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'edit',
+                child: Row(
+                  children: [
+                    const Icon(Icons.edit_outlined, size: 20),
+                    const SizedBox(width: 8),
+                    Text(l10n.edit),
+                  ],
+                ),
+              ),
+              const PopupMenuDivider(),
+              PopupMenuItem(
+                value: 'delete',
+                child: Row(
+                  children: [
+                    const Icon(Icons.delete_outline, size: 20,
+                        color: AppTheme.errorColor),
+                    const SizedBox(width: 8),
+                    Text(l10n.delete,
+                        style: const TextStyle(color: AppTheme.errorColor)),
+                  ],
+                ),
+              ),
+            ];
+          },
+        ),
+        onTap: () => context.push(RouteNames.itemDetailPath(item.id!)),
       ),
     );
   }
@@ -453,8 +336,33 @@ class _ItemCard extends StatelessWidget {
       ),
     );
   }
+}
 
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
-  }
+/// ⚠️ Dialog de exclusão total
+void _showDeleteAllDialog(BuildContext context) {
+  final l10n = AppLocalizations.of(context)!;
+
+  showDialog(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: Text(l10n.confirmDeleteAllTitle),
+      content: Text(l10n.confirmDeleteAllMessage),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(dialogContext),
+          child: Text(l10n.cancel),
+        ),
+        TextButton(
+          onPressed: () {
+            context.read<CrudBloc<Item>>().add(
+              const DeleteAllEvent<Item>(),
+            );
+            Navigator.pop(dialogContext);
+          },
+          style: TextButton.styleFrom(foregroundColor: AppTheme.errorColor),
+          child: Text(l10n.deleteAll),
+        ),
+      ],
+    ),
+  );
 }

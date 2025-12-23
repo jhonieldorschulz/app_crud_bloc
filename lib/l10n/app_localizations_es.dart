@@ -9,22 +9,28 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appTitle => 'Administrador';
+  String get appTitle => 'Gestor de Elementos';
 
   @override
-  String get itemList => 'Lista';
+  String get home => 'Inicio';
 
   @override
-  String get itemDetails => 'Detalles';
+  String get items => 'Elementos';
 
   @override
-  String get addItem => 'Agregar';
+  String get itemList => 'Lista de Elementos';
 
   @override
-  String get editItem => 'Editar';
+  String get itemDetails => 'Detalles del Elemento';
 
   @override
-  String get newItem => 'Nuevo';
+  String get addItem => 'Añadir Elemento';
+
+  @override
+  String get editItem => 'Editar Elemento';
+
+  @override
+  String get newItem => 'Nuevo Elemento';
 
   @override
   String get title => 'Título';
@@ -33,7 +39,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get description => 'Descripción';
 
   @override
-  String get createdAt => 'Creado';
+  String get createdAt => 'Creado el';
+
+  @override
+  String get search => 'Buscar';
 
   @override
   String get save => 'Guardar';
@@ -60,37 +69,45 @@ class AppLocalizationsEs extends AppLocalizations {
   String get back => 'Volver';
 
   @override
-  String get confirmDelete => 'Confirmar';
+  String get noItemsFound => 'No se encontraron elementos';
 
   @override
-  String get confirmDeleteMessage => '¿Eliminar?';
+  String get tapToAddFirst => 'Toca + para añadir tu primer elemento';
 
   @override
-  String get confirmDeleteAllTitle => 'Confirmar';
+  String get retry => 'Intentar de Nuevo';
 
   @override
-  String get confirmDeleteAllMessage => '¿Eliminar TODOS?';
+  String get loadingItems => 'Cargando elementos...';
 
   @override
-  String get noItemsFound => 'Sin elementos';
+  String get confirmDelete => 'Confirmar Eliminación';
 
   @override
-  String get tapToAddFirst => 'Toque + para agregar';
+  String get confirmDeleteMessage =>
+      '¿Realmente deseas eliminar este elemento?';
 
   @override
-  String get retry => 'Reintentar';
+  String get confirmDeleteAllTitle => 'Confirmar Eliminación Masiva';
 
   @override
-  String get validationTitleRequired => 'Ingrese título';
+  String get confirmDeleteAllMessage =>
+      '¿Realmente deseas eliminar TODOS los elementos?';
 
   @override
-  String get validationTitleMinLength => 'Mínimo 3 caracteres';
+  String get validationTitleRequired => 'Por favor, ingresa un título';
 
   @override
-  String get validationDescriptionRequired => 'Ingrese descripción';
+  String get validationTitleMinLength =>
+      'El título debe tener al menos 3 caracteres';
 
   @override
-  String get validationDescriptionMinLength => 'Mínimo 10 caracteres';
+  String get validationDescriptionRequired =>
+      'Por favor, ingresa una descripción';
+
+  @override
+  String get validationDescriptionMinLength =>
+      'La descripción debe tener al menos 10 caracteres';
 
   @override
   String get settings => 'Configuración';
@@ -99,7 +116,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get language => 'Idioma';
 
   @override
-  String get selectLanguage => 'Seleccionar';
+  String get selectLanguage => 'Seleccionar Idioma';
 
   @override
   String get about => 'Acerca de';
@@ -121,7 +138,4 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appearance => 'Apariencia';
-
-  @override
-  String get loadingItems => 'Cargando...';
 }

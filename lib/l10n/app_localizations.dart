@@ -100,239 +100,257 @@ abstract class AppLocalizations {
     Locale('pt'),
   ];
 
-  /// No description provided for @appTitle.
+  /// Application title
   ///
   /// In en, this message translates to:
   /// **'Item Manager'**
   String get appTitle;
 
-  /// No description provided for @itemList.
+  /// Home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// Items menu
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get items;
+
+  /// Item list screen title
   ///
   /// In en, this message translates to:
   /// **'Item List'**
   String get itemList;
 
-  /// No description provided for @itemDetails.
+  /// Item details screen title
   ///
   /// In en, this message translates to:
   /// **'Item Details'**
   String get itemDetails;
 
-  /// No description provided for @addItem.
+  /// Add item screen title
   ///
   /// In en, this message translates to:
   /// **'Add Item'**
   String get addItem;
 
-  /// No description provided for @editItem.
+  /// Edit item screen title
   ///
   /// In en, this message translates to:
   /// **'Edit Item'**
   String get editItem;
 
-  /// No description provided for @newItem.
+  /// New item label
   ///
   /// In en, this message translates to:
   /// **'New Item'**
   String get newItem;
 
-  /// No description provided for @title.
+  /// Title field label
   ///
   /// In en, this message translates to:
   /// **'Title'**
   String get title;
 
-  /// No description provided for @description.
+  /// Description field label
   ///
   /// In en, this message translates to:
   /// **'Description'**
   String get description;
 
-  /// No description provided for @createdAt.
+  /// Created date label
   ///
   /// In en, this message translates to:
   /// **'Created at'**
   String get createdAt;
 
-  /// No description provided for @save.
+  /// Search hint text
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// Save button
   ///
   /// In en, this message translates to:
   /// **'Save'**
   String get save;
 
-  /// No description provided for @saveChanges.
+  /// Save changes button
   ///
   /// In en, this message translates to:
   /// **'Save Changes'**
   String get saveChanges;
 
-  /// No description provided for @cancel.
+  /// Cancel button
   ///
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
 
-  /// No description provided for @delete.
+  /// Delete button
   ///
   /// In en, this message translates to:
   /// **'Delete'**
   String get delete;
 
-  /// No description provided for @deleteAll.
+  /// Delete all button
   ///
   /// In en, this message translates to:
   /// **'Delete All'**
   String get deleteAll;
 
-  /// No description provided for @edit.
+  /// Edit button
   ///
   /// In en, this message translates to:
   /// **'Edit'**
   String get edit;
 
-  /// No description provided for @view.
+  /// View button
   ///
   /// In en, this message translates to:
   /// **'View'**
   String get view;
 
-  /// No description provided for @back.
+  /// Back button
   ///
   /// In en, this message translates to:
   /// **'Back'**
   String get back;
 
-  /// No description provided for @confirmDelete.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm Deletion'**
-  String get confirmDelete;
-
-  /// No description provided for @confirmDeleteMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Do you really want to delete this item?'**
-  String get confirmDeleteMessage;
-
-  /// No description provided for @confirmDeleteAllTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm Mass Deletion'**
-  String get confirmDeleteAllTitle;
-
-  /// No description provided for @confirmDeleteAllMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Do you really want to delete ALL items?'**
-  String get confirmDeleteAllMessage;
-
-  /// No description provided for @noItemsFound.
+  /// Message when search returns no results
   ///
   /// In en, this message translates to:
   /// **'No items found'**
   String get noItemsFound;
 
-  /// No description provided for @tapToAddFirst.
+  /// Message when list is empty
   ///
   /// In en, this message translates to:
   /// **'Tap + to add your first item'**
   String get tapToAddFirst;
 
-  /// No description provided for @retry.
+  /// Retry message
   ///
   /// In en, this message translates to:
   /// **'Try Again'**
   String get retry;
 
-  /// No description provided for @validationTitleRequired.
+  /// Loading message
+  ///
+  /// In en, this message translates to:
+  /// **'Loading items...'**
+  String get loadingItems;
+
+  /// Delete confirmation dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Deletion'**
+  String get confirmDelete;
+
+  /// Delete confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Do you really want to delete this item?'**
+  String get confirmDeleteMessage;
+
+  /// Delete all confirmation dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Mass Deletion'**
+  String get confirmDeleteAllTitle;
+
+  /// Delete all confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Do you really want to delete ALL items?'**
+  String get confirmDeleteAllMessage;
+
+  /// Title required validation error
   ///
   /// In en, this message translates to:
   /// **'Please enter a title'**
   String get validationTitleRequired;
 
-  /// No description provided for @validationTitleMinLength.
+  /// Title min length validation error
   ///
   /// In en, this message translates to:
   /// **'Title must be at least 3 characters'**
   String get validationTitleMinLength;
 
-  /// No description provided for @validationDescriptionRequired.
+  /// Description required validation error
   ///
   /// In en, this message translates to:
   /// **'Please enter a description'**
   String get validationDescriptionRequired;
 
-  /// No description provided for @validationDescriptionMinLength.
+  /// Description min length validation error
   ///
   /// In en, this message translates to:
   /// **'Description must be at least 10 characters'**
   String get validationDescriptionMinLength;
 
-  /// No description provided for @settings.
+  /// Settings screen title
   ///
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
 
-  /// No description provided for @language.
+  /// Language setting label
   ///
   /// In en, this message translates to:
   /// **'Language'**
   String get language;
 
-  /// No description provided for @selectLanguage.
+  /// Language selection label
   ///
   /// In en, this message translates to:
   /// **'Select Language'**
   String get selectLanguage;
 
-  /// No description provided for @about.
+  /// About section label
   ///
   /// In en, this message translates to:
   /// **'About'**
   String get about;
 
-  /// No description provided for @version.
+  /// Version label
   ///
   /// In en, this message translates to:
   /// **'Version'**
   String get version;
 
-  /// No description provided for @developer.
+  /// Developer label
   ///
   /// In en, this message translates to:
   /// **'Developer'**
   String get developer;
 
-  /// No description provided for @theme.
+  /// Theme setting label
   ///
   /// In en, this message translates to:
   /// **'Theme'**
   String get theme;
 
-  /// No description provided for @lightMode.
+  /// Light theme option
   ///
   /// In en, this message translates to:
   /// **'Light Mode'**
   String get lightMode;
 
-  /// No description provided for @darkMode.
+  /// Dark theme option
   ///
   /// In en, this message translates to:
   /// **'Dark Mode'**
   String get darkMode;
 
-  /// No description provided for @appearance.
+  /// Appearance section title
   ///
   /// In en, this message translates to:
   /// **'Appearance'**
   String get appearance;
-
-  /// No description provided for @loadingItems.
-  ///
-  /// In en, this message translates to:
-  /// **'Loading items...'**
-  String get loadingItems;
 }
 
 class _AppLocalizationsDelegate

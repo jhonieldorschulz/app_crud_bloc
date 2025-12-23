@@ -1,42 +1,171 @@
 {
   "@@locale": "en",
   "appTitle": "Item Manager",
+  "@appTitle": {
+    "description": "Application title"
+  },
+  "home": "Home",
+  "@home": {
+    "description": "Home screen"
+  },
+  "items": "Items",
+  "@items": {
+    "description": "Items menu"
+  },
   "itemList": "Item List",
+  "@itemList": {
+    "description": "Item list screen title"
+  },
   "itemDetails": "Item Details",
+  "@itemDetails": {
+    "description": "Item details screen title"
+  },
   "addItem": "Add Item",
+  "@addItem": {
+    "description": "Add item screen title"
+  },
   "editItem": "Edit Item",
+  "@editItem": {
+    "description": "Edit item screen title"
+  },
   "newItem": "New Item",
+  "@newItem": {
+    "description": "New item label"
+  },
   "title": "Title",
+  "@title": {
+    "description": "Title field label"
+  },
   "description": "Description",
+  "@description": {
+    "description": "Description field label"
+  },
   "createdAt": "Created at",
+  "@createdAt": {
+    "description": "Created date label"
+  },
+  "search": "Search",
+  "@search": {
+    "description": "Search hint text"
+  },
   "save": "Save",
+  "@save": {
+    "description": "Save button"
+  },
   "saveChanges": "Save Changes",
+  "@saveChanges": {
+    "description": "Save changes button"
+  },
   "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button"
+  },
   "delete": "Delete",
+  "@delete": {
+    "description": "Delete button"
+  },
   "deleteAll": "Delete All",
+  "@deleteAll": {
+    "description": "Delete all button"
+  },
   "edit": "Edit",
+  "@edit": {
+    "description": "Edit button"
+  },
   "view": "View",
+  "@view": {
+    "description": "View button"
+  },
   "back": "Back",
-  "confirmDelete": "Confirm Deletion",
-  "confirmDeleteMessage": "Do you really want to delete this item?",
-  "confirmDeleteAllTitle": "Confirm Mass Deletion",
-  "confirmDeleteAllMessage": "Do you really want to delete ALL items?",
+  "@back": {
+    "description": "Back button"
+  },
   "noItemsFound": "No items found",
+  "@noItemsFound": {
+    "description": "Message when search returns no results"
+  },
   "tapToAddFirst": "Tap + to add your first item",
+  "@tapToAddFirst": {
+    "description": "Message when list is empty"
+  },
   "retry": "Try Again",
+  "@retry": {
+    "description": "Retry message"
+  },
+  "loadingItems": "Loading items...",
+  "@loadingItems": {
+    "description": "Loading message"
+  },
+  "confirmDelete": "Confirm Deletion",
+  "@confirmDelete": {
+    "description": "Delete confirmation dialog title"
+  },
+  "confirmDeleteMessage": "Do you really want to delete this item?",
+  "@confirmDeleteMessage": {
+    "description": "Delete confirmation message"
+  },
+  "confirmDeleteAllTitle": "Confirm Mass Deletion",
+  "@confirmDeleteAllTitle": {
+    "description": "Delete all confirmation dialog title"
+  },
+  "confirmDeleteAllMessage": "Do you really want to delete ALL items?",
+  "@confirmDeleteAllMessage": {
+    "description": "Delete all confirmation message"
+  },
   "validationTitleRequired": "Please enter a title",
+  "@validationTitleRequired": {
+    "description": "Title required validation error"
+  },
   "validationTitleMinLength": "Title must be at least 3 characters",
+  "@validationTitleMinLength": {
+    "description": "Title min length validation error"
+  },
   "validationDescriptionRequired": "Please enter a description",
+  "@validationDescriptionRequired": {
+    "description": "Description required validation error"
+  },
   "validationDescriptionMinLength": "Description must be at least 10 characters",
+  "@validationDescriptionMinLength": {
+    "description": "Description min length validation error"
+  },
   "settings": "Settings",
+  "@settings": {
+    "description": "Settings screen title"
+  },
   "language": "Language",
+  "@language": {
+    "description": "Language setting label"
+  },
   "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Language selection label"
+  },
   "about": "About",
+  "@about": {
+    "description": "About section label"
+  },
   "version": "Version",
+  "@version": {
+    "description": "Version label"
+  },
   "developer": "Developer",
+  "@developer": {
+    "description": "Developer label"
+  },
   "theme": "Theme",
+  "@theme": {
+    "description": "Theme setting label"
+  },
   "lightMode": "Light Mode",
+  "@lightMode": {
+    "description": "Light theme option"
+  },
   "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "Dark theme option"
+  },
   "appearance": "Appearance",
-  "loadingItems": "Loading items..."
+  "@appearance": {
+    "description": "Appearance section title"
+  }
 }

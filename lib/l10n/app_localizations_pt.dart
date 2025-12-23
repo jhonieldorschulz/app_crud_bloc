@@ -9,19 +9,25 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
-  String get appTitle => 'Gerenciador';
+  String get appTitle => 'Gerenciador de Itens';
 
   @override
-  String get itemList => 'Lista';
+  String get home => 'Início';
 
   @override
-  String get itemDetails => 'Detalhes';
+  String get items => 'Itens';
 
   @override
-  String get addItem => 'Adicionar';
+  String get itemList => 'Lista de Itens';
 
   @override
-  String get editItem => 'Editar';
+  String get itemDetails => 'Detalhes do Item';
+
+  @override
+  String get addItem => 'Adicionar Item';
+
+  @override
+  String get editItem => 'Editar Item';
 
   @override
   String get newItem => 'Novo Item';
@@ -36,6 +42,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get createdAt => 'Criado em';
 
   @override
+  String get search => 'Buscar';
+
+  @override
   String get save => 'Salvar';
 
   @override
@@ -45,52 +54,58 @@ class AppLocalizationsPt extends AppLocalizations {
   String get cancel => 'Cancelar';
 
   @override
-  String get delete => 'Deletar';
+  String get delete => 'Excluir';
 
   @override
-  String get deleteAll => 'Deletar Todos';
+  String get deleteAll => 'Excluir Todos';
 
   @override
   String get edit => 'Editar';
 
   @override
-  String get view => 'Ver';
+  String get view => 'Visualizar';
 
   @override
   String get back => 'Voltar';
 
   @override
-  String get confirmDelete => 'Confirmar';
+  String get noItemsFound => 'Nenhum item encontrado';
 
   @override
-  String get confirmDeleteMessage => 'Deletar este item?';
-
-  @override
-  String get confirmDeleteAllTitle => 'Confirmar';
-
-  @override
-  String get confirmDeleteAllMessage => 'Deletar TODOS?';
-
-  @override
-  String get noItemsFound => 'Nenhum item';
-
-  @override
-  String get tapToAddFirst => 'Toque + para adicionar';
+  String get tapToAddFirst => 'Toque em + para adicionar seu primeiro item';
 
   @override
   String get retry => 'Tentar Novamente';
 
   @override
-  String get validationTitleRequired => 'Digite um título';
+  String get loadingItems => 'Carregando itens...';
 
   @override
-  String get validationTitleMinLength => 'Mínimo 3 caracteres';
+  String get confirmDelete => 'Confirmar Exclusão';
 
   @override
-  String get validationDescriptionRequired => 'Digite uma descrição';
+  String get confirmDeleteMessage => 'Você realmente deseja excluir este item?';
 
   @override
-  String get validationDescriptionMinLength => 'Mínimo 10 caracteres';
+  String get confirmDeleteAllTitle => 'Confirmar Exclusão em Massa';
+
+  @override
+  String get confirmDeleteAllMessage =>
+      'Você realmente deseja excluir TODOS os itens?';
+
+  @override
+  String get validationTitleRequired => 'Por favor, insira um título';
+
+  @override
+  String get validationTitleMinLength =>
+      'O título deve ter pelo menos 3 caracteres';
+
+  @override
+  String get validationDescriptionRequired => 'Por favor, insira uma descrição';
+
+  @override
+  String get validationDescriptionMinLength =>
+      'A descrição deve ter pelo menos 10 caracteres';
 
   @override
   String get settings => 'Configurações';
@@ -121,7 +136,4 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appearance => 'Aparência';
-
-  @override
-  String get loadingItems => 'Carregando...';
 }

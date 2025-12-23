@@ -12,6 +12,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Item Manager';
 
   @override
+  String get home => 'Home';
+
+  @override
+  String get items => 'Items';
+
+  @override
   String get itemList => 'Item List';
 
   @override
@@ -34,6 +40,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get createdAt => 'Created at';
+
+  @override
+  String get search => 'Search';
 
   @override
   String get save => 'Save';
@@ -60,6 +69,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get back => 'Back';
 
   @override
+  String get noItemsFound => 'No items found';
+
+  @override
+  String get tapToAddFirst => 'Tap + to add your first item';
+
+  @override
+  String get retry => 'Try Again';
+
+  @override
+  String get loadingItems => 'Loading items...';
+
+  @override
   String get confirmDelete => 'Confirm Deletion';
 
   @override
@@ -71,15 +92,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get confirmDeleteAllMessage =>
       'Do you really want to delete ALL items?';
-
-  @override
-  String get noItemsFound => 'No items found';
-
-  @override
-  String get tapToAddFirst => 'Tap + to add your first item';
-
-  @override
-  String get retry => 'Try Again';
 
   @override
   String get validationTitleRequired => 'Please enter a title';
@@ -123,7 +135,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appearance => 'Appearance';
-
-  @override
-  String get loadingItems => 'Loading items...';
 }
