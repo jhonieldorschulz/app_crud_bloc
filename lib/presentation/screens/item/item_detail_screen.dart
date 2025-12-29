@@ -1,4 +1,4 @@
-import 'package:app_crud_bloc/data/model/item_extensions.dart';
+import 'package:app_crud_bloc/data/model/item/item_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';

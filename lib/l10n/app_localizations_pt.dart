@@ -136,4 +136,182 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appearance => 'Aparência';
+
+  @override
+  String get products => 'Produtos';
+
+  @override
+  String get product => 'Produto';
+
+  @override
+  String get productList => 'Lista de Produtos';
+
+  @override
+  String get productDetails => 'Detalhes do Produto';
+
+  @override
+  String get createProduct => 'Criar Produto';
+
+  @override
+  String get editProduct => 'Editar Produto';
+
+  @override
+  String get deleteProduct => 'Excluir Produto';
+
+  @override
+  String get productCreated => 'Produto criado com sucesso';
+
+  @override
+  String get productUpdated => 'Produto atualizado com sucesso';
+
+  @override
+  String get productDeleted => 'Produto excluído com sucesso';
+
+  @override
+  String get deleteProductConfirmation =>
+      'Tem certeza que deseja excluir este produto?';
+
+  @override
+  String get noProducts => 'Nenhum produto';
+
+  @override
+  String get createFirstProduct =>
+      'Toque no botão + para criar seu primeiro produto';
+
+  @override
+  String get productNotFound => 'Produto não encontrado';
+
+  @override
+  String get searchProducts => 'Buscar produtos...';
+
+  @override
+  String get name => 'Nome';
+
+  @override
+  String get price => 'Preço';
+
+  @override
+  String get unitPrice => 'Preço Unitário';
+
+  @override
+  String get stock => 'Estoque';
+
+  @override
+  String get category => 'Categoria';
+
+  @override
+  String get barcode => 'Código de Barras';
+
+  @override
+  String get productStatus => 'Status do Produto';
+
+  @override
+  String get active => 'Ativo';
+
+  @override
+  String get inactive => 'Inativo';
+
+  @override
+  String get productActive => 'Produto Ativo';
+
+  @override
+  String get productActiveDescription => 'Produto disponível para venda';
+
+  @override
+  String get productInactiveDescription => 'Produto indisponível para venda';
+
+  @override
+  String get productNameHint => 'Ex: Notebook Dell Inspiron 15';
+
+  @override
+  String get productDescriptionHint => 'Ex: Intel Core i7, 16GB RAM, SSD 512GB';
+
+  @override
+  String get categoryHint => 'Ex: Eletrônicos';
+
+  @override
+  String get priceHelper => 'Informe o preço em reais (Ex: 19.99)';
+
+  @override
+  String get nameRequired => 'Nome é obrigatório';
+
+  @override
+  String get nameMinLength => 'Nome deve ter pelo menos 3 caracteres';
+
+  @override
+  String get descriptionRequired => 'Descrição é obrigatória';
+
+  @override
+  String get descriptionMinLength =>
+      'Descrição deve ter pelo menos 10 caracteres';
+
+  @override
+  String get priceRequired => 'Preço é obrigatório';
+
+  @override
+  String get priceInvalid => 'Informe um preço válido maior que 0';
+
+  @override
+  String get stockRequired => 'Estoque é obrigatório';
+
+  @override
+  String get stockInvalid => 'Informe um estoque válido (0 ou mais)';
+
+  @override
+  String get categoryRequired => 'Categoria é obrigatória';
+
+  @override
+  String get categoryMinLength => 'Categoria deve ter pelo menos 3 caracteres';
+
+  @override
+  String get outOfStock => 'Esgotado';
+
+  @override
+  String get lowStock => 'Estoque Baixo';
+
+  @override
+  String get available => 'Disponível';
+
+  @override
+  String get restockingRecommended => 'Reposição recomendada';
+
+  @override
+  String get generalInfo => 'Informações Gerais';
+
+  @override
+  String get stockAndPrice => 'Estoque e Preço';
+
+  @override
+  String get additionalInfo => 'Informações Adicionais';
+
+  @override
+  String get units => 'unidades';
+
+  @override
+  String get totalStockValue => 'Valor Total em Estoque';
+
+  @override
+  String get updatedAt => 'Atualizado em';
+
+  @override
+  String get optional => 'opcional';
+
+  @override
+  String get create => 'Criar';
+
+  @override
+  String get update => 'Atualizar';
+
+  @override
+  String get deleteAllConfirmation =>
+      'Tem certeza que deseja excluir todos os produtos? Esta ação não pode ser desfeita.';
+
+  @override
+  String get noResults => 'Nenhum resultado encontrado';
+
+  @override
+  String get searchFor => 'Buscar por';
+
+  @override
+  String get error => 'Erro';
 }

@@ -1,3 +1,6 @@
+import 'package:app_crud_bloc/presentation/screens/product/product_detail_screen.dart';
+import 'package:app_crud_bloc/presentation/screens/product/product_form_screen.dart';
+import 'package:app_crud_bloc/presentation/screens/product/product_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -81,6 +84,33 @@ class AppRouter {
           );
         },
       ),
+
+      // ========================================
+      // PRODUCTS
+      // ========================================
+      GoRoute(
+        path: RouteNames.products,
+        builder: (context, state) => const ProductListScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.productCreate,
+        builder: (context, state) => const ProductFormScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.productDetail,
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return ProductDetailScreen(productId: id);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.productEdit,
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return ProductFormScreen(productId: id);
+        },
+      ),
+
 
       // ========================================
       // SETTINGS (✅ PRESERVADO!)

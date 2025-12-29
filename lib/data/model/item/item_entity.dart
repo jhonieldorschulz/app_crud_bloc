@@ -1,5 +1,5 @@
-import '../../core/base/base_entity.dart';
-import '../database/app_database.dart';
+import '../../../core/base/base_entity.dart';
+import '../../database/app_database.dart';
 
 /// ItemEntity - Adapter do Item (Drift) para BaseEntity
 /// 
@@ -10,7 +10,7 @@ import '../database/app_database.dart';
 /// ```dart
 /// final item = await database.itemsDao.getItemById(1);
 /// final entity = item.toEntity(); // Agora é BaseEntity!
-/// 
+///
 /// // Usar em código genérico:
 /// print(entity.displayTitle); // item.title
 /// print(entity.displayDescription); // item.description
@@ -21,7 +21,7 @@ extension ItemEntity on Item {
 }
 
 /// _ItemEntityAdapter - Implementação privada do adapter
-/// 
+///
 /// Privada (_) porque só deve ser acessada via extension
 class _ItemEntityAdapter implements BaseEntity {
   final Item _item;

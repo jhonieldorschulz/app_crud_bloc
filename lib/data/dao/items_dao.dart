@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import '../database/app_database.dart';
-import '../model/item.dart';
+import '../model/item/item.dart';
 
 /// ItemsDao - Data Access Object para operações CRUD
 ///

@@ -167,5 +167,237 @@
   "appearance": "Appearance",
   "@appearance": {
     "description": "Appearance section title"
+  },
+  "products": "Products",
+  "@products": {
+    "description": "Products menu"
+  },
+  "product": "Product",
+  "@product": {
+    "description": "Product singular"
+  },
+  "productList": "Product List",
+  "@productList": {
+    "description": "Product list screen title"
+  },
+  "productDetails": "Product Details",
+  "@productDetails": {
+    "description": "Product details screen title"
+  },
+  "createProduct": "Create Product",
+  "@createProduct": {
+    "description": "Create product button"
+  },
+  "editProduct": "Edit Product",
+  "@editProduct": {
+    "description": "Edit product screen title"
+  },
+  "deleteProduct": "Delete Product",
+  "@deleteProduct": {
+    "description": "Delete product button"
+  },
+  "productCreated": "Product created successfully",
+  "@productCreated": {
+    "description": "Product created success message"
+  },
+  "productUpdated": "Product updated successfully",
+  "@productUpdated": {
+    "description": "Product updated success message"
+  },
+  "productDeleted": "Product deleted successfully",
+  "@productDeleted": {
+    "description": "Product deleted success message"
+  },
+  "deleteProductConfirmation": "Are you sure you want to delete this product?",
+  "@deleteProductConfirmation": {
+    "description": "Delete product confirmation message"
+  },
+  "noProducts": "No products",
+  "@noProducts": {
+    "description": "Empty products list message"
+  },
+  "createFirstProduct": "Tap the + button to create your first product",
+  "@createFirstProduct": {
+    "description": "Empty products list call to action"
+  },
+  "productNotFound": "Product not found",
+  "@productNotFound": {
+    "description": "Product not found error"
+  },
+  "searchProducts": "Search products...",
+  "@searchProducts": {
+    "description": "Search products hint"
+  },
+  "name": "Name",
+  "@name": {
+    "description": "Name field label"
+  },
+  "price": "Price",
+  "@price": {
+    "description": "Price field label"
+  },
+  "unitPrice": "Unit Price",
+  "@unitPrice": {
+    "description": "Unit price label"
+  },
+  "stock": "Stock",
+  "@stock": {
+    "description": "Stock field label"
+  },
+  "category": "Category",
+  "@category": {
+    "description": "Category field label"
+  },
+  "barcode": "Barcode",
+  "@barcode": {
+    "description": "Barcode field label"
+  },
+  "productStatus": "Product Status",
+  "@productStatus": {
+    "description": "Product status label"
+  },
+  "active": "Active",
+  "@active": {
+    "description": "Active status"
+  },
+  "inactive": "Inactive",
+  "@inactive": {
+    "description": "Inactive status"
+  },
+  "productActive": "Product Active",
+  "@productActive": {
+    "description": "Product active switch label"
+  },
+  "productActiveDescription": "Product available for sale",
+  "@productActiveDescription": {
+    "description": "Product active description"
+  },
+  "productInactiveDescription": "Product unavailable for sale",
+  "@productInactiveDescription": {
+    "description": "Product inactive description"
+  },
+  "productNameHint": "Ex: Dell Inspiron 15 Notebook",
+  "@productNameHint": {
+    "description": "Product name field hint"
+  },
+  "productDescriptionHint": "Ex: Intel Core i7, 16GB RAM, 512GB SSD",
+  "@productDescriptionHint": {
+    "description": "Product description field hint"
+  },
+  "categoryHint": "Ex: Electronics",
+  "@categoryHint": {
+    "description": "Category field hint"
+  },
+  "priceHelper": "Enter price in reais (Ex: 19.99)",
+  "@priceHelper": {
+    "description": "Price field helper text"
+  },
+  "nameRequired": "Name is required",
+  "@nameRequired": {
+    "description": "Name required validation"
+  },
+  "nameMinLength": "Name must have at least 3 characters",
+  "@nameMinLength": {
+    "description": "Name min length validation"
+  },
+  "descriptionRequired": "Description is required",
+  "@descriptionRequired": {
+    "description": "Description required validation"
+  },
+  "descriptionMinLength": "Description must have at least 10 characters",
+  "@descriptionMinLength": {
+    "description": "Description min length validation"
+  },
+  "priceRequired": "Price is required",
+  "@priceRequired": {
+    "description": "Price required validation"
+  },
+  "priceInvalid": "Enter a valid price greater than 0",
+  "@priceInvalid": {
+    "description": "Price invalid validation"
+  },
+  "stockRequired": "Stock is required",
+  "@stockRequired": {
+    "description": "Stock required validation"
+  },
+  "stockInvalid": "Enter a valid stock (0 or more)",
+  "@stockInvalid": {
+    "description": "Stock invalid validation"
+  },
+  "categoryRequired": "Category is required",
+  "@categoryRequired": {
+    "description": "Category required validation"
+  },
+  "categoryMinLength": "Category must have at least 3 characters",
+  "@categoryMinLength": {
+    "description": "Category min length validation"
+  },
+  "outOfStock": "Out of Stock",
+  "@outOfStock": {
+    "description": "Out of stock status"
+  },
+  "lowStock": "Low Stock",
+  "@lowStock": {
+    "description": "Low stock status"
+  },
+  "available": "Available",
+  "@available": {
+    "description": "Available status"
+  },
+  "restockingRecommended": "Restocking recommended",
+  "@restockingRecommended": {
+    "description": "Restocking recommendation message"
+  },
+  "generalInfo": "General Information",
+  "@generalInfo": {
+    "description": "General information section title"
+  },
+  "stockAndPrice": "Stock and Price",
+  "@stockAndPrice": {
+    "description": "Stock and price section title"
+  },
+  "additionalInfo": "Additional Information",
+  "@additionalInfo": {
+    "description": "Additional information section title"
+  },
+  "units": "units",
+  "@units": {
+    "description": "Units label"
+  },
+  "totalStockValue": "Total Stock Value",
+  "@totalStockValue": {
+    "description": "Total stock value label"
+  },
+  "updatedAt": "Updated at",
+  "@updatedAt": {
+    "description": "Updated date label"
+  },
+  "optional": "optional",
+  "@optional": {
+    "description": "Optional field indicator"
+  },
+  "create": "Create",
+  "@create": {
+    "description": "Create button"
+  },
+  "update": "Update",
+  "@update": {
+    "description": "Update button"
+  },
+  "deleteAllConfirmation": "Are you sure you want to delete all products? This action cannot be undone.",
+  "@deleteAllConfirmation": {
+    "description": "Delete all products confirmation"
+  },
+  "noResults": "No results found",
+  "@noResults": {
+    "description": "No search results message"
+  },
+  "searchFor": "Search for",
+  "@searchFor": {
+    "description": "Search for label"
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Error label"
   }
 }

@@ -135,4 +135,182 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appearance => 'Appearance';
+
+  @override
+  String get products => 'Products';
+
+  @override
+  String get product => 'Product';
+
+  @override
+  String get productList => 'Product List';
+
+  @override
+  String get productDetails => 'Product Details';
+
+  @override
+  String get createProduct => 'Create Product';
+
+  @override
+  String get editProduct => 'Edit Product';
+
+  @override
+  String get deleteProduct => 'Delete Product';
+
+  @override
+  String get productCreated => 'Product created successfully';
+
+  @override
+  String get productUpdated => 'Product updated successfully';
+
+  @override
+  String get productDeleted => 'Product deleted successfully';
+
+  @override
+  String get deleteProductConfirmation =>
+      'Are you sure you want to delete this product?';
+
+  @override
+  String get noProducts => 'No products';
+
+  @override
+  String get createFirstProduct =>
+      'Tap the + button to create your first product';
+
+  @override
+  String get productNotFound => 'Product not found';
+
+  @override
+  String get searchProducts => 'Search products...';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get unitPrice => 'Unit Price';
+
+  @override
+  String get stock => 'Stock';
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get barcode => 'Barcode';
+
+  @override
+  String get productStatus => 'Product Status';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get inactive => 'Inactive';
+
+  @override
+  String get productActive => 'Product Active';
+
+  @override
+  String get productActiveDescription => 'Product available for sale';
+
+  @override
+  String get productInactiveDescription => 'Product unavailable for sale';
+
+  @override
+  String get productNameHint => 'Ex: Dell Inspiron 15 Notebook';
+
+  @override
+  String get productDescriptionHint => 'Ex: Intel Core i7, 16GB RAM, 512GB SSD';
+
+  @override
+  String get categoryHint => 'Ex: Electronics';
+
+  @override
+  String get priceHelper => 'Enter price in reais (Ex: 19.99)';
+
+  @override
+  String get nameRequired => 'Name is required';
+
+  @override
+  String get nameMinLength => 'Name must have at least 3 characters';
+
+  @override
+  String get descriptionRequired => 'Description is required';
+
+  @override
+  String get descriptionMinLength =>
+      'Description must have at least 10 characters';
+
+  @override
+  String get priceRequired => 'Price is required';
+
+  @override
+  String get priceInvalid => 'Enter a valid price greater than 0';
+
+  @override
+  String get stockRequired => 'Stock is required';
+
+  @override
+  String get stockInvalid => 'Enter a valid stock (0 or more)';
+
+  @override
+  String get categoryRequired => 'Category is required';
+
+  @override
+  String get categoryMinLength => 'Category must have at least 3 characters';
+
+  @override
+  String get outOfStock => 'Out of Stock';
+
+  @override
+  String get lowStock => 'Low Stock';
+
+  @override
+  String get available => 'Available';
+
+  @override
+  String get restockingRecommended => 'Restocking recommended';
+
+  @override
+  String get generalInfo => 'General Information';
+
+  @override
+  String get stockAndPrice => 'Stock and Price';
+
+  @override
+  String get additionalInfo => 'Additional Information';
+
+  @override
+  String get units => 'units';
+
+  @override
+  String get totalStockValue => 'Total Stock Value';
+
+  @override
+  String get updatedAt => 'Updated at';
+
+  @override
+  String get optional => 'optional';
+
+  @override
+  String get create => 'Create';
+
+  @override
+  String get update => 'Update';
+
+  @override
+  String get deleteAllConfirmation =>
+      'Are you sure you want to delete all products? This action cannot be undone.';
+
+  @override
+  String get noResults => 'No results found';
+
+  @override
+  String get searchFor => 'Search for';
+
+  @override
+  String get error => 'Error';
 }

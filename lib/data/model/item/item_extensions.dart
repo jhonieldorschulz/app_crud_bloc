@@ -1,4 +1,4 @@
-import '../database/app_database.dart';
+import '../../database/app_database.dart';
 
 /// ItemEntityExtension - Adapta Item para BaseEntity
 ///

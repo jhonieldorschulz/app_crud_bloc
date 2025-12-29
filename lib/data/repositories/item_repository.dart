@@ -1,6 +1,5 @@
 import '../../core/base/base_repository.dart';
 import '../database/app_database.dart';
-import '../model/item_extensions.dart';
 
 /// ItemRepository - Implementação de BaseRepository para Item
 ///

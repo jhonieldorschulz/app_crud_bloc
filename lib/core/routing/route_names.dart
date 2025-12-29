@@ -15,6 +15,14 @@ class RouteNames {
   static const String itemDetail = '/item/:id';
   static const String itemEdit = '/item/:id/edit';
 
+
+  static const String products = '/products';
+  static const String productDetail = '/product/:id';
+  static const String productCreate = '/product/new';
+  static const String productEdit = '/product/:id/edit';
+
+  static String productDetailPath(int id) => '/product/$id';
+  static String productEditPath(int id) => '/product/$id/edit';
   // ========================================
   // PRODUCTS (Futuro)
   // ========================================

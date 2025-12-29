@@ -48,6 +48,16 @@ class AppNavigationDrawer extends StatelessWidget {
                   color: Colors.blue,
                 ),
 
+                _buildMenuItem(
+                  context: context,
+                  icon: Icons.description_outlined,
+                  selectedIcon: Icons.description,
+                  title: 'Products',
+                  subtitle: 'Manage your products',
+                  route: RouteNames.products,
+                  color: Colors.blue,
+                ),
+
                 const Divider(height: AppTheme.space32),
 
                 // Seção: Settings

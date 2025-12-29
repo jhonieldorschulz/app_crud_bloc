@@ -1,5 +1,7 @@
 import 'package:app_crud_bloc/core/base/crud_bloc.dart';
+import 'package:app_crud_bloc/data/repositories/product_repository.dart';
 import 'package:app_crud_bloc/logic/item/item_list_cubit.dart';
+import 'package:app_crud_bloc/logic/product/product_list_cubit.dart';
 import 'package:app_crud_bloc/logic/theme/theme_bloc.dart';
 import 'package:get_it/get_it.dart';
 import '../../data/database/app_database.dart';
@@ -23,6 +25,14 @@ Future<void> setupDependencies() async {
 
   getIt.registerFactory<ItemListCubit>(
         () => ItemListCubit(),
+  );
+
+  getIt.registerFactory<CrudBloc<Product>>(
+        () => CrudBloc<Product>(repository: getIt<ProductRepository>()),
+  );
+
+  getIt.registerFactory<ProductListCubit>(
+        () => ProductListCubit(),
   );
 
   getIt.registerSingleton<LocaleBloc>(LocaleBloc());

@@ -351,6 +351,354 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Appearance'**
   String get appearance;
+
+  /// Products menu
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get products;
+
+  /// Product singular
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get product;
+
+  /// Product list screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Product List'**
+  String get productList;
+
+  /// Product details screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Product Details'**
+  String get productDetails;
+
+  /// Create product button
+  ///
+  /// In en, this message translates to:
+  /// **'Create Product'**
+  String get createProduct;
+
+  /// Edit product screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Product'**
+  String get editProduct;
+
+  /// Delete product button
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Product'**
+  String get deleteProduct;
+
+  /// Product created success message
+  ///
+  /// In en, this message translates to:
+  /// **'Product created successfully'**
+  String get productCreated;
+
+  /// Product updated success message
+  ///
+  /// In en, this message translates to:
+  /// **'Product updated successfully'**
+  String get productUpdated;
+
+  /// Product deleted success message
+  ///
+  /// In en, this message translates to:
+  /// **'Product deleted successfully'**
+  String get productDeleted;
+
+  /// Delete product confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this product?'**
+  String get deleteProductConfirmation;
+
+  /// Empty products list message
+  ///
+  /// In en, this message translates to:
+  /// **'No products'**
+  String get noProducts;
+
+  /// Empty products list call to action
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the + button to create your first product'**
+  String get createFirstProduct;
+
+  /// Product not found error
+  ///
+  /// In en, this message translates to:
+  /// **'Product not found'**
+  String get productNotFound;
+
+  /// Search products hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search products...'**
+  String get searchProducts;
+
+  /// Name field label
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// Price field label
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get price;
+
+  /// Unit price label
+  ///
+  /// In en, this message translates to:
+  /// **'Unit Price'**
+  String get unitPrice;
+
+  /// Stock field label
+  ///
+  /// In en, this message translates to:
+  /// **'Stock'**
+  String get stock;
+
+  /// Category field label
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// Barcode field label
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode'**
+  String get barcode;
+
+  /// Product status label
+  ///
+  /// In en, this message translates to:
+  /// **'Product Status'**
+  String get productStatus;
+
+  /// Active status
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active;
+
+  /// Inactive status
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get inactive;
+
+  /// Product active switch label
+  ///
+  /// In en, this message translates to:
+  /// **'Product Active'**
+  String get productActive;
+
+  /// Product active description
+  ///
+  /// In en, this message translates to:
+  /// **'Product available for sale'**
+  String get productActiveDescription;
+
+  /// Product inactive description
+  ///
+  /// In en, this message translates to:
+  /// **'Product unavailable for sale'**
+  String get productInactiveDescription;
+
+  /// Product name field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Ex: Dell Inspiron 15 Notebook'**
+  String get productNameHint;
+
+  /// Product description field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Ex: Intel Core i7, 16GB RAM, 512GB SSD'**
+  String get productDescriptionHint;
+
+  /// Category field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Ex: Electronics'**
+  String get categoryHint;
+
+  /// Price field helper text
+  ///
+  /// In en, this message translates to:
+  /// **'Enter price in reais (Ex: 19.99)'**
+  String get priceHelper;
+
+  /// Name required validation
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required'**
+  String get nameRequired;
+
+  /// Name min length validation
+  ///
+  /// In en, this message translates to:
+  /// **'Name must have at least 3 characters'**
+  String get nameMinLength;
+
+  /// Description required validation
+  ///
+  /// In en, this message translates to:
+  /// **'Description is required'**
+  String get descriptionRequired;
+
+  /// Description min length validation
+  ///
+  /// In en, this message translates to:
+  /// **'Description must have at least 10 characters'**
+  String get descriptionMinLength;
+
+  /// Price required validation
+  ///
+  /// In en, this message translates to:
+  /// **'Price is required'**
+  String get priceRequired;
+
+  /// Price invalid validation
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid price greater than 0'**
+  String get priceInvalid;
+
+  /// Stock required validation
+  ///
+  /// In en, this message translates to:
+  /// **'Stock is required'**
+  String get stockRequired;
+
+  /// Stock invalid validation
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid stock (0 or more)'**
+  String get stockInvalid;
+
+  /// Category required validation
+  ///
+  /// In en, this message translates to:
+  /// **'Category is required'**
+  String get categoryRequired;
+
+  /// Category min length validation
+  ///
+  /// In en, this message translates to:
+  /// **'Category must have at least 3 characters'**
+  String get categoryMinLength;
+
+  /// Out of stock status
+  ///
+  /// In en, this message translates to:
+  /// **'Out of Stock'**
+  String get outOfStock;
+
+  /// Low stock status
+  ///
+  /// In en, this message translates to:
+  /// **'Low Stock'**
+  String get lowStock;
+
+  /// Available status
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get available;
+
+  /// Restocking recommendation message
+  ///
+  /// In en, this message translates to:
+  /// **'Restocking recommended'**
+  String get restockingRecommended;
+
+  /// General information section title
+  ///
+  /// In en, this message translates to:
+  /// **'General Information'**
+  String get generalInfo;
+
+  /// Stock and price section title
+  ///
+  /// In en, this message translates to:
+  /// **'Stock and Price'**
+  String get stockAndPrice;
+
+  /// Additional information section title
+  ///
+  /// In en, this message translates to:
+  /// **'Additional Information'**
+  String get additionalInfo;
+
+  /// Units label
+  ///
+  /// In en, this message translates to:
+  /// **'units'**
+  String get units;
+
+  /// Total stock value label
+  ///
+  /// In en, this message translates to:
+  /// **'Total Stock Value'**
+  String get totalStockValue;
+
+  /// Updated date label
+  ///
+  /// In en, this message translates to:
+  /// **'Updated at'**
+  String get updatedAt;
+
+  /// Optional field indicator
+  ///
+  /// In en, this message translates to:
+  /// **'optional'**
+  String get optional;
+
+  /// Create button
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get create;
+
+  /// Update button
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get update;
+
+  /// Delete all products confirmation
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete all products? This action cannot be undone.'**
+  String get deleteAllConfirmation;
+
+  /// No search results message
+  ///
+  /// In en, this message translates to:
+  /// **'No results found'**
+  String get noResults;
+
+  /// Search for label
+  ///
+  /// In en, this message translates to:
+  /// **'Search for'**
+  String get searchFor;
+
+  /// Error label
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
 }
 
 class _AppLocalizationsDelegate
