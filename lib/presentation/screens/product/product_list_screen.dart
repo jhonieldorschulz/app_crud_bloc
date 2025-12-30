@@ -11,6 +11,7 @@ import '../../../data/database/app_database.dart';
 import '../../../data/model/product/product_extensions.dart';
 import '../../../logic/product/product_list_cubit.dart';
 import '../../../logic/product/product_list_state.dart';
+import '../widgets/app_navigation_drawer.dart';
 
 /// ProductListScreen - Tela de listagem de produtos
 ///
@@ -46,6 +47,12 @@ class _ProductListView extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
+          leading: Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            ),
+          ),
           title: Text(AppLocalizations.of(context)!.products),
           actions: [
             // Botão de deletar todos
@@ -56,6 +63,7 @@ class _ProductListView extends StatelessWidget {
             ),
           ],
         ),
+        drawer: AppNavigationDrawer(currentRoute: RouteNames.products),
         body: Column(
           children: [
             // Barra de busca

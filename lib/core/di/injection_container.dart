@@ -17,11 +17,17 @@ Future<void> setupDependencies() async {
     ItemRepository(database: getIt<AppDatabase>()),
   );
 
+  getIt.registerSingleton<ProductRepository>(
+    ProductRepository(database: getIt<AppDatabase>()),
+  );
+
   getIt.registerFactory<CrudBloc<Item>>(
         () => CrudBloc<Item>(
       repository: getIt<ItemRepository>(),
     ),
   );
+
+
 
   getIt.registerFactory<ItemListCubit>(
         () => ItemListCubit(),

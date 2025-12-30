@@ -35,6 +35,10 @@ class MyApp extends StatelessWidget {
             ..add(const LoadAllEvent<Item>()),
         ),
 
+        BlocProvider<CrudBloc<Product>>(
+          create: (context) => getIt<CrudBloc<Product>>()
+            ..add(const LoadAllEvent<Product>()),
+        ),
 
         // ✅ Theme BLoC - Carregar tema salvo ao iniciar
         BlocProvider<ThemeBloc>(

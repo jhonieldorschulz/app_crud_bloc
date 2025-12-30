@@ -99,6 +99,7 @@ class CrudBloc<T> extends Bloc<CrudEvent<T>, CrudState<T>> {
       // Recarregar lista automaticamente
       add(const LoadAllEvent());
     } catch (e) {
+      print(e.toString());
       emit(CrudError(message: 'Failed to create: $e'));
     }
   }
