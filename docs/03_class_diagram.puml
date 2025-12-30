@@ -1,0 +1,543 @@
+@startuml app_crud_bloc_class_diagram
+!theme blueprint
+title Diagrama de Classes - App CRUD BLoC\nPrincipais Classes e Relacionamentos
+
+' ============================================
+' DOMAIN MODELS
+' ============================================
+package "Data Models" <<Database>> {
+  class Item {
+    + int id
+    + String title
+    + String description
+    + DateTime createdAt
+    + DateTime? updatedAt
+    --
+    + Item copyWith(...)
+    + Map<String, dynamic> toJson()
+    + {static} Item fromJson(Map)
+  }
+  
+  class Product {
+    + int id
+    + String name
+    + String description
+    + double price
+    + int stock
+    + String category
+    + bool isActive
+    + DateTime createdAt
+    + DateTime? updatedAt
+    --
+    + Product copyWith(...)
+    + String get formattedPrice
+    + bool get isOutOfStock
+    + bool get isLowStock
+  }
+  
+  note right of Product
+    **Business Logic Properties**
+    - isOutOfStock: stock == 0
+    - isLowStock: stock < 10
+    - formattedPrice: "R$ 10.50"
+  end note
+}
+
+' ============================================
+' DRIFT DATABASE
+' ============================================
+package "Database Layer" <<Database>> {
+  class AppDatabase <<Singleton>> {
+    - {static} AppDatabase? _instance
+    --
+    + ItemsDao itemsDao
+    + ProductsDao productsDao
+    + int schemaVersion = 2
+    + MigrationStrategy migration
+    --
+    + Future<void> close()
+    + {static} AppDatabase getInstance()
+  }
+  
+  abstract class ItemsDao {
+    - AppDatabase database
+    --
+    + Future<List<Item>> getAllItems()
+    + Stream<List<Item>> watchAllItems()
+    + Future<Item?> getItemById(int id)
+    + Future<int> insertItem(Item item)
+    + Future<bool> updateItem(Item item)
+    + Future<int> deleteItem(int id)
+    + Future<int> deleteAllItems()
+  }
+  
+  abstract class ProductsDao {
+    - AppDatabase database
+    --
+    + Future<List<Product>> getAllProducts()
+    + Stream<List<Product>> watchAllProducts()
+    + Future<Product?> getProductById(int id)
+    + Future<int> insertProduct(Product product)
+    + Future<bool> updateProduct(Product product)
+    + Future<int> deleteProduct(int id)
+    + Future<int> deleteAllProducts()
+  }
+  
+  AppDatabase *-- ItemsDao : contains
+  AppDatabase *-- ProductsDao : contains
+}
+
+' ============================================
+' REPOSITORY PATTERN
+' ============================================
+package "Repository Layer" {
+  class ItemRepository {
+    - AppDatabase database
+    --
+    + ItemRepository(AppDatabase database)
+    --
+    + Stream<List<Item>> watchAll()
+    + Future<List<Item>> getAll()
+    + Future<Item?> getById(int id)
+    + Future<int> create(Item item)
+    + Future<bool> update(Item item)
+    + Future<int> delete(int id)
+    + Future<int> deleteAll()
+  }
+  
+  class ProductRepository {
+    - AppDatabase database
+    --
+    + ProductRepository(AppDatabase database)
+    --
+    + Stream<List<Product>> watchAll()
+    + Future<List<Product>> getAll()
+    + Future<Product?> getById(int id)
+    + Future<int> create(Product product)
+    + Future<bool> update(Product product)
+    + Future<int> delete(int id)
+    + Future<int> deleteAll()
+  }
+  
+  ItemRepository --> AppDatabase : uses
+  ProductRepository --> AppDatabase : uses
+  ItemRepository ..> Item : works with
+  ProductRepository ..> Product : works with
+}
+
+' ============================================
+' BLOC EVENTS (SEALED CLASSES)
+' ============================================
+package "Events" <<Rectangle>> {
+  abstract class ItemEvent {
+    + {abstract} List<Object?> get props
+  }
+  
+  class LoadItemsEvent extends ItemEvent {
+    + const LoadItemsEvent()
+  }
+  
+  class CreateItemEvent extends ItemEvent {
+    + final Item item
+    + const CreateItemEvent(Item item)
+  }
+  
+  class UpdateItemEvent extends ItemEvent {
+    + final Item item
+    + const UpdateItemEvent(Item item)
+  }
+  
+  class DeleteItemEvent extends ItemEvent {
+    + final int id
+    + const DeleteItemEvent(int id)
+  }
+  
+  class DeleteAllItemsEvent extends ItemEvent {
+    + const DeleteAllItemsEvent()
+  }
+  
+  ' Generic CRUD Events
+  abstract class "CrudEvent<T>" as CrudEvent {
+    + {abstract} List<Object?> get props
+  }
+  
+  class "LoadAllEvent<T>" as LoadAllEvent {
+    + const LoadAllEvent()
+  }
+  
+  class "LoadByIdEvent<T>" as LoadByIdEvent {
+    + final int id
+    + const LoadByIdEvent(int id)
+  }
+  
+  class "CreateEvent<T>" as CreateEvent {
+    + final T entity
+    + const CreateEvent(T entity)
+  }
+  
+  class "UpdateEvent<T>" as UpdateEvent {
+    + final T entity
+    + const UpdateEvent(T entity)
+  }
+  
+  class "DeleteEvent<T>" as DeleteEvent {
+    + final int id
+    + const DeleteEvent(int id)
+  }
+  
+  class "DeleteAllEvent<T>" as DeleteAllEvent {
+    + const DeleteAllEvent()
+  }
+  
+  LoadAllEvent --|> CrudEvent
+  LoadByIdEvent --|> CrudEvent
+  CreateEvent --|> CrudEvent
+  UpdateEvent --|> CrudEvent
+  DeleteEvent --|> CrudEvent
+  DeleteAllEvent --|> CrudEvent
+}
+
+' ============================================
+' BLOC STATES (SEALED CLASSES)
+' ============================================
+package "States" <<Rectangle>> {
+  abstract class ItemState {
+    + {abstract} List<Object?> get props
+  }
+  
+  class ItemInitial extends ItemState {
+    + const ItemInitial()
+  }
+  
+  class ItemLoading extends ItemState {
+    + const ItemLoading()
+  }
+  
+  class ItemLoaded extends ItemState {
+    + final List<Item> items
+    + const ItemLoaded(List<Item> items)
+  }
+  
+  class ItemError extends ItemState {
+    + final String message
+    + const ItemError(String message)
+  }
+  
+  class ItemSuccess extends ItemState {
+    + final String message
+    + const ItemSuccess(String message)
+  }
+  
+  ' Generic CRUD States
+  abstract class "CrudState<T>" as CrudState {
+    + {abstract} List<Object?> get props
+  }
+  
+  class "CrudInitial<T>" as CrudInitial {
+    + const CrudInitial()
+  }
+  
+  class "CrudLoading<T>" as CrudLoading {
+    + const CrudLoading()
+  }
+  
+  class "CrudLoaded<T>" as CrudLoaded {
+    + final List<T> entities
+    + const CrudLoaded(List<T> entities)
+  }
+  
+  class "CrudSingle<T>" as CrudSingle {
+    + final T entity
+    + const CrudSingle(T entity)
+  }
+  
+  class "CrudSuccess<T>" as CrudSuccess {
+    + final String message
+    + const CrudSuccess(String message)
+  }
+  
+  class "CrudError<T>" as CrudError {
+    + final String message
+    + const CrudError(String message)
+  }
+  
+  CrudInitial --|> CrudState
+  CrudLoading --|> CrudState
+  CrudLoaded --|> CrudState
+  CrudSingle --|> CrudState
+  CrudSuccess --|> CrudState
+  CrudError --|> CrudState
+}
+
+' ============================================
+' BLOC CLASSES
+' ============================================
+package "BLoC Layer" {
+  class "Bloc<ItemEvent, ItemState>" as ItemBlocBase <<abstract>>
+  
+  class ItemBloc extends ItemBlocBase {
+    - ItemRepository repository
+    - StreamSubscription? _itemsSubscription
+    --
+    + ItemBloc(ItemRepository repository)
+    --
+    # void _onLoadItems(LoadItemsEvent event, Emitter emit)
+    # void _onCreateItem(CreateItemEvent event, Emitter emit)
+    # void _onUpdateItem(UpdateItemEvent event, Emitter emit)
+    # void _onDeleteItem(DeleteItemEvent event, Emitter emit)
+    # void _onDeleteAllItems(DeleteAllItemsEvent event, Emitter emit)
+    --
+    + Future<void> close()
+  }
+  
+  class "Bloc<CrudEvent<T>, CrudState<T>>" as CrudBlocBase <<abstract>>
+  
+  class "CrudBloc<T>" as CrudBloc {
+    - dynamic repository
+    - StreamSubscription? _subscription
+    --
+    + CrudBloc({required repository})
+    --
+    # void _onLoadAll(LoadAllEvent<T> event, Emitter emit)
+    # void _onLoadById(LoadByIdEvent<T> event, Emitter emit)
+    # void _onCreate(CreateEvent<T> event, Emitter emit)
+    # void _onUpdate(UpdateEvent<T> event, Emitter emit)
+    # void _onDelete(DeleteEvent<T> event, Emitter emit)
+    # void _onDeleteAll(DeleteAllEvent<T> event, Emitter emit)
+    --
+    + Future<void> close()
+  }
+  
+  ItemBloc --> ItemRepository : uses
+  ItemBloc ..> ItemEvent : handles
+  ItemBloc ..> ItemState : emits
+  
+  CrudBloc --> ProductRepository : uses
+  CrudBloc --> ItemRepository : uses (generic)
+  CrudBloc ..> CrudEvent : handles
+  CrudBloc ..> CrudState : emits
+}
+
+' ============================================
+' CUBIT CLASSES (UI STATE)
+' ============================================
+package "Cubit Layer" {
+  class "Cubit<ItemListState>" as ItemListCubitBase <<abstract>>
+  
+  class ItemListCubit extends ItemListCubitBase {
+    - List<Item> _allItems
+    --
+    + ItemListCubit()
+    --
+    + void setItems(List<Item> items)
+    + void search(String query)
+    + void clearSearch()
+    + void setLoading()
+  }
+  
+  class "Cubit<ProductListState>" as ProductListCubitBase <<abstract>>
+  
+  class ProductListCubit extends ProductListCubitBase {
+    - List<Product> _allProducts
+    --
+    + ProductListCubit()
+    --
+    + void setProducts(List<Product> products)
+    + void search(String query)
+    + void clearSearch()
+    + void setLoading()
+  }
+  
+  ' Cubit States
+  abstract class ItemListState {
+    + {abstract} List<Object?> get props
+  }
+  
+  class ItemListInitial extends ItemListState
+  class ItemListLoading extends ItemListState
+  
+  class ItemListLoaded extends ItemListState {
+    + final List<Item> allItems
+    + final List<Item> visibleItems
+    + final bool isSearching
+    + final String? searchText
+    --
+    + bool get isEmpty
+    + bool get hasNoResults
+    + int get count
+  }
+  
+  abstract class ProductListState {
+    + {abstract} List<Object?> get props
+  }
+  
+  class ProductListInitial extends ProductListState
+  class ProductListLoading extends ProductListState
+  
+  class ProductListLoaded extends ProductListState {
+    + final List<Product> allProducts
+    + final List<Product> visibleProducts
+    + final bool isSearching
+    + final String? searchText
+    --
+    + bool get isEmpty
+    + bool get hasNoResults
+  }
+  
+  ItemListCubit ..> ItemListState : emits
+  ProductListCubit ..> ProductListState : emits
+}
+
+' ============================================
+' DEPENDENCY INJECTION
+' ============================================
+class InjectionContainer <<Singleton>> {
+  + {static} GetIt getIt
+  --
+  + {static} Future<void> setupDependencies()
+  --
+  - registerDatabase()
+  - registerRepositories()
+  - registerBlocs()
+  - registerCubits()
+  - registerSettings()
+}
+
+note right of InjectionContainer
+  **GetIt Configuration**
+  
+  Singletons:
+  - AppDatabase
+  - ItemRepository
+  - ProductRepository
+  - LocaleBloc
+  - ThemeBloc
+  
+  Factories (new instance):
+  - ItemBloc
+  - CrudBloc<Item>
+  - CrudBloc<Product>
+  - ItemListCubit
+  - ProductListCubit
+end note
+
+InjectionContainer ..> AppDatabase : registers
+InjectionContainer ..> ItemRepository : registers
+InjectionContainer ..> ProductRepository : registers
+InjectionContainer ..> ItemBloc : registers
+InjectionContainer ..> CrudBloc : registers
+
+' ============================================
+' ROUTING
+' ============================================
+class RouteNames <<Constants>> {
+  + {static} const String home = "/"
+  + {static} const String items = "/items"
+  + {static} const String itemDetail = "/items/detail"
+  + {static} const String itemCreate = "/items/create"
+  + {static} const String itemEdit = "/items/edit"
+  + {static} const String products = "/products"
+  + {static} const String productDetail = "/products/detail"
+  + {static} const String settings = "/settings"
+  --
+  + {static} String itemDetailPath(int id)
+  + {static} String itemEditPath(int id)
+  + {static} String productDetailPath(int id)
+}
+
+class AppRouter {
+  + {static} GoRouter router
+  --
+  + {static} GoRouter _createRouter()
+  - {static} List<RouteBase> _routes()
+}
+
+AppRouter ..> RouteNames : uses
+
+' ============================================
+' THEME & LOCALIZATION
+' ============================================
+package "Configuration" {
+  class LocaleBloc {
+    - SharedPreferences prefs
+    --
+    + LocaleBloc()
+    --
+    + void _onLoadSavedLocale(event, emit)
+    + void _onChangeLocale(event, emit)
+  }
+  
+  class ThemeBloc {
+    - SharedPreferences prefs
+    --
+    + ThemeBloc()
+    --
+    + void _onLoadSavedTheme(event, emit)
+    + void _onToggleTheme(event, emit)
+  }
+  
+  class AppTheme {
+    + {static} const Color itemsColor
+    + {static} const Color productsColor
+    + {static} const double space8
+    + {static} const double space16
+    + {static} ThemeData lightTheme
+    + {static} ThemeData darkTheme
+  }
+}
+
+' ============================================
+' PRESENTATION SCREENS
+' ============================================
+package "Screens" <<Rectangle>> {
+  class ItemListScreen {
+    + const ItemListScreen({Key? key})
+    --
+    + Widget build(BuildContext context)
+  }
+  
+  class ProductListScreen {
+    + const ProductListScreen({Key? key})
+    --
+    + Widget build(BuildContext context)
+  }
+  
+  class HomeScreen {
+    + const HomeScreen({Key? key})
+    --
+    + Widget build(BuildContext context)
+  }
+  
+  class ItemFormScreen {
+    + final int? itemId
+    --
+    + const ItemFormScreen({this.itemId, Key? key})
+    --
+    + Widget build(BuildContext context)
+  }
+  
+  ItemListScreen --> ItemBloc : uses
+  ItemListScreen --> ItemListCubit : uses
+  ProductListScreen --> CrudBloc : uses
+  ProductListScreen --> ProductListCubit : uses
+  HomeScreen --> CrudBloc : uses (Item & Product)
+  ItemFormScreen --> ItemBloc : uses
+}
+
+' ============================================
+' RELACIONAMENTOS GERAIS
+' ============================================
+
+' Repository layer delegates to DAOs
+ItemRepository --> ItemsDao : delegates to
+ProductRepository --> ProductsDao : delegates to
+
+' DAOs interact with database
+ItemsDao --> AppDatabase : queries
+ProductsDao --> AppDatabase : queries
+
+' BLoCs depend on repositories (injected)
+ItemBloc --> ItemRepository : depends on
+CrudBloc --> ProductRepository : depends on
+
+@enduml

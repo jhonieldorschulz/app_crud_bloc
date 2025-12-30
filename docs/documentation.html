@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App CRUD BLoC - Documentação Técnica</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- PlantUML Encoder -->
+    <script src="https://cdn.jsdelivr.net/npm/plantuml-encoder@1.4.0/dist/plantuml-encoder.min.js"></script>
+    
+    <!-- Mermaid for Mind Maps -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    
+    <!-- Google Fonts - Distinctive Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Custom Tailwind Configuration */
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+        
+        :root {
+            --color-primary: #1e3a8a;
+            --color-secondary: #0ea5e9;
+            --color-accent: #f59e0b;
+            --color-dark: #0f172a;
+            --color-light: #f8fafc;
+            --color-gray: #64748b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--color-dark);
+            overflow-x: hidden;
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-family: 'Crimson Pro', serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            letter-spacing: -0.03em;
+        }
+        
+        h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            letter-spacing: -0.02em;
+        }
+        
+        code, pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+        
+        /* Navigation */
+        .nav-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 300px;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .nav-sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .nav-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+        
+        .nav-item {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            font-weight: 500;
+        }
+        
+        .nav-item:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            border-left-color: var(--color-accent);
+            transform: translateX(4px);
+        }
+        
+        .nav-item.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--color-secondary);
+        }
+        
+        .nav-item i {
+            width: 24px;
+            margin-right: 12px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 300px;
+            padding: 3rem;
+            max-width: 1400px;
+            animation: fadeIn 0.6s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: white;
+            border-radius: 12px;
+            font-size: 1.5rem;
+        }
+        
+        /* Diagrams */
+        .diagram-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            overflow: auto;
+        }
+        
+        .diagram-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        /* Mind Map */
+        .mermaid {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        /* Code Blocks */
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--color-accent);
+        }
+        
+        pre code {
+            color: inherit;
+        }
+        
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .badge-blue {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .badge-green {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .badge-yellow {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .badge-red {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0ea5e9 100%);
+            color: white;
+            padding: 4rem 2rem;
+            border-radius: 24px;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.5;
+            }
+        }
+        
+        /* Grid Layout */
+        .diagram-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        /* Tabs */
+        .tab-container {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            margin: 2rem 0;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            background: #f1f5f9;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--color-gray);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tab-button:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        .tab-button.active {
+            color: var(--color-primary);
+            background: white;
+        }
+        
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--color-primary);
+        }
+        
+        .tab-content {
+            padding: 2rem;
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 101;
+            background: var(--color-dark);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .nav-sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 2rem 1rem;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .hero {
+                padding: 3rem 1.5rem;
+            }
+            
+            .diagram-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Section Spacing */
+        section {
+            margin-bottom: 4rem;
+        }
+        
+        /* List Styling */
+        ul, ol {
+            margin-left: 1.5rem;
+            line-height: 1.8;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Links */
+        a {
+            color: var(--color-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        a:hover {
+            color: var(--color-primary);
+            text-decoration: underline;
+        }
+        
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: var(--color-dark);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover {
+            background: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <nav class="nav-sidebar" id="sidebar">
+        <div style="padding: 2rem 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">
+                <i class="fas fa-cube" style="color: var(--color-accent);"></i>
+                App CRUD BLoC
+            </h3>
+            <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6);">
+                Documentação Técnica
+            </p>
+        </div>
+        
+        <div style="padding: 1.5rem 0;">
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.4); font-weight: 600;">
+                Navegação
+            </div>
+            <a href="#overview" class="nav-item active">
+                <i class="fas fa-home"></i>
+                Visão Geral
+            </a>
+            <a href="#architecture" class="nav-item">
+                <i class="fas fa-layer-group"></i>
+                Arquitetura
+            </a>
+            <a href="#mindmap" class="nav-item">
+                <i class="fas fa-project-diagram"></i>
+                Mapa Mental
+            </a>
+            
+            <div style="padding: 1.5rem 1.5rem 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.4); font-weight: 600; margin-top: 1rem;">
+                Diagramas UML
+            </div>
+            <a href="#diagram-packages" class="nav-item">
+                <i class="fas fa-box"></i>
+                Pacotes
+            </a>
+            <a href="#diagram-components" class="nav-item">
+                <i class="fas fa-cubes"></i>
+                Componentes
+            </a>
+            <a href="#diagram-classes" class="nav-item">
+                <i class="fas fa-code"></i>
+                Classes
+            </a>
+            <a href="#diagram-sequence" class="nav-item">
+                <i class="fas fa-stream"></i>
+                Sequência
+            </a>
+            
+            <div style="padding: 1.5rem 1.5rem 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.4); font-weight: 600; margin-top: 1rem;">
+                Recursos
+            </div>
+            <a href="#technologies" class="nav-item">
+                <i class="fas fa-tools"></i>
+                Tecnologias
+            </a>
+            <a href="#patterns" class="nav-item">
+                <i class="fas fa-puzzle-piece"></i>
+                Padrões
+            </a>
+            <a href="#guide" class="nav-item">
+                <i class="fas fa-book"></i>
+                Guia de Uso
+            </a>
+        </div>
+        
+        <div style="padding: 1.5rem; margin-top: auto; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <div style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6);">
+                <i class="fas fa-code-branch"></i> v1.0.0
+            </div>
+            <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.4); margin-top: 0.5rem;">
+                Dezembro 2024
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section id="overview" class="hero">
+            <div style="position: relative; z-index: 1;">
+                <h1 style="margin-bottom: 1rem;">
+                    App CRUD BLoC
+                </h1>
+                <p style="font-size: 1.25rem; opacity: 0.95; max-width: 700px; line-height: 1.6;">
+                    Documentação técnica completa de uma aplicação Flutter com Clean Architecture, BLoC Pattern, Drift ORM e Dependency Injection
+                </p>
+                <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <span class="badge" style="background: rgba(255, 255, 255, 0.2); color: white;">
+                        <i class="fas fa-mobile-alt"></i> Flutter 3.24+
+                    </span>
+                    <span class="badge" style="background: rgba(255, 255, 255, 0.2); color: white;">
+                        <i class="fas fa-dart"></i> Dart 3.2+
+                    </span>
+                    <span class="badge" style="background: rgba(255, 255, 255, 0.2); color: white;">
+                        <i class="fas fa-layer-group"></i> Clean Architecture
+                    </span>
+                    <span class="badge" style="background: rgba(255, 255, 255, 0.2); color: white;">
+                        <i class="fas fa-check-circle"></i> Production Ready
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture Overview -->
+        <section id="architecture">
+            <h2 style="margin-bottom: 2rem; color: var(--color-primary);">
+                <i class="fas fa-sitemap" style="color: var(--color-accent);"></i>
+                Visão Geral da Arquitetura
+            </h2>
+            
+            <div class="diagram-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                            <i class="fas fa-desktop"></i>
+                        </div>
+                        <h3>Presentation Layer</h3>
+                    </div>
+                    <p style="color: var(--color-gray); margin-bottom: 1rem;">
+                        Interface do usuário e widgets Flutter. Responsável pela exibição e interação.
+                    </p>
+                    <ul style="color: var(--color-gray); font-size: 0.9rem;">
+                        <li>Screens (ItemList, ProductList, Home)</li>
+                        <li>Widgets reutilizáveis</li>
+                        <li>Navigation (GoRouter)</li>
+                        <li>Localization (L10n)</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Logic Layer</h3>
+                    </div>
+                    <p style="color: var(--color-gray); margin-bottom: 1rem;">
+                        Lógica de negócio e gerenciamento de estado com BLoC Pattern.
+                    </p>
+                    <ul style="color: var(--color-gray); font-size: 0.9rem;">
+                        <li>BLoCs (ItemBloc, CrudBloc<T>)</li>
+                        <li>Cubits (UI state)</li>
+                        <li>Events (sealed classes)</li>
+                        <li>States (sealed classes)</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3>Data Layer</h3>
+                    </div>
+                    <p style="color: var(--color-gray); margin-bottom: 1rem;">
+                        Acesso e persistência de dados com Drift ORM e SQLite.
+                    </p>
+                    <ul style="color: var(--color-gray); font-size: 0.9rem;">
+                        <li>Models (Item, Product)</li>
+                        <li>DAOs (Data Access Objects)</li>
+                        <li>Repositories (abstração)</li>
+                        <li>Database (SQLite)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mind Map -->
+        <section id="mindmap">
+            <h2 style="margin-bottom: 2rem; color: var(--color-primary);">
+                <i class="fas fa-project-diagram" style="color: var(--color-accent);"></i>
+                Mapa Mental da Arquitetura
+            </h2>
+            
+            <div class="card">
+                <pre class="mermaid">
+mindmap
+  root((App CRUD BLoC))
+    Presentation
+      Screens
+        ItemListScreen
+        ProductListScreen
+        HomeScreen
+        SettingsScreen
+      Widgets
+        AppNavigationDrawer
+        Common Widgets
+      Navigation
+        GoRouter
+        RouteNames
+    Logic
+      BLoC Pattern
+        ItemBloc
+        CrudBloc<T>
+        Events sealed
+        States sealed
+      Cubits
+        ItemListCubit
+        ProductListCubit
+      Configuration
+        LocaleBloc
+        ThemeBloc
+    Data
+      Models
+        Item
+        Product
+      Database
+        AppDatabase
+        Drift ORM
+        SQLite
+      DAOs
+        ItemsDao
+        ProductsDao
+      Repositories
+        ItemRepository
+        ProductRepository
+    Core
+      DI
+        GetIt
+        InjectionContainer
+      Theme
+        AppTheme
+        Light/Dark
+      L10n
+        EN PT ES
+                </pre>
+            </div>
+        </section>
+
+        <!-- UML Diagrams -->
+        <section id="diagram-packages">
+            <h2 style="margin-bottom: 2rem; color: var(--color-primary);">
+                <i class="fas fa-box" style="color: var(--color-accent);"></i>
+                Diagrama de Pacotes
+            </h2>
+            
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" onclick="switchTab('packages', 0)">
+                        <i class="fas fa-image"></i> Diagrama
+                    </button>
+                    <button class="tab-button" onclick="switchTab('packages', 1)">
+                        <i class="fas fa-info-circle"></i> Descrição
+                    </button>
+                    <button class="tab-button" onclick="switchTab('packages', 2)">
+                        <i class="fas fa-code"></i> Código PlantUML
+                    </button>
+                </div>
+                
+                <div class="tab-content active" id="packages-tab-0">
+                    <div class="diagram-container">
+                        <img id="packages-diagram" src="" alt="Diagrama de Pacotes" style="display: none;">
+                        <div id="packages-loading" style="text-align: center; padding: 3rem;">
+                            <div class="loading" style="border-color: var(--color-gray); border-top-color: var(--color-primary);"></div>
+                            <p style="margin-top: 1rem; color: var(--color-gray);">Carregando diagrama...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="packages-tab-1">
+                    <h3 style="margin-bottom: 1rem;">Sobre o Diagrama de Pacotes</h3>
+                    <p style="color: var(--color-gray); line-height: 1.8; margin-bottom: 1rem;">
+                        O diagrama de pacotes mostra a organização de alto nível do código em módulos e suas dependências.
+                    </p>
+                    <h4 style="margin: 1.5rem 0 1rem;">Conteúdo:</h4>
+                    <ul style="color: var(--color-gray); line-height: 1.8;">
+                        <li><strong>Estrutura de pastas</strong> do projeto Flutter</li>
+                        <li><strong>Camadas da Clean Architecture</strong> (Presentation, Logic, Data, Core)</li>
+                        <li><strong>Dependências entre pacotes</strong> (setas indicam direção)</li>
+                        <li><strong>Bibliotecas externas</strong> utilizadas (flutter_bloc, get_it, drift, etc)</li>
+                        <li><strong>Code generation</strong> (arquivos .g.dart gerados pelo Drift)</li>
+                        <li><strong>Localização</strong> (arquivos .arb e AppLocalizations geradas)</li>
+                    </ul>
+                    <div style="background: #fef3c7; border-left: 4px solid var(--color-accent); padding: 1rem; margin-top: 1.5rem; border-radius: 8px;">
+                        <strong><i class="fas fa-lightbulb"></i> Dependency Rule:</strong>
+                        <p style="margin-top: 0.5rem; color: var(--color-gray);">
+                            As dependências sempre apontam para dentro: Presentation → Logic → Data. Nunca o contrário.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="packages-tab-2">
+                    <p style="color: var(--color-gray); margin-bottom: 1rem;">
+                        Código fonte PlantUML para o Diagrama de Pacotes:
+                    </p>
+                    <pre><code>@startuml app_crud_bloc_package_diagram
+!theme blueprint
+title Diagrama de Pacotes
+
+package "presentation" {
+  [ItemListScreen]
+  [ProductListScreen]
+  [HomeScreen]
+}
+
+package "logic" {
+  [ItemBloc]
+  [CrudBloc]
+}
+
+package "data" {
+  [AppDatabase]
+  [Repositories]
+}
+
+presentation --> logic
+logic --> data
+@enduml</code></pre>
+                    <p style="color: var(--color-gray); margin-top: 1rem; font-size: 0.9rem;">
+                        <i class="fas fa-download"></i> 
+                        <a href="#" onclick="downloadPlantUML('packages'); return false;">
+                            Download do arquivo .puml completo
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Component Diagram -->
+        <section id="diagram-components">
+            <h2 style="margin-bottom: 2rem; color: var(--color-primary);">
+                <i class="fas fa-cubes" style="color: var(--color-accent);"></i>
+                Diagrama de Componentes
+            </h2>
+            
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" onclick="switchTab('components', 0)">
+                        <i class="fas fa-image"></i> Diagrama
+                    </button>
+                    <button class="tab-button" onclick="switchTab('components', 1)">
+                        <i class="fas fa-info-circle"></i> Descrição
+                    </button>
+                </div>
+                
+                <div class="tab-content active" id="components-tab-0">
+                    <div class="diagram-container">
+                        <img id="components-diagram" src="" alt="Diagrama de Componentes" style="display: none;">
+                        <div id="components-loading" style="text-align: center; padding: 3rem;">
+                            <div class="loading" style="border-color: var(--color-gray); border-top-color: var(--color-primary);"></div>
+                            <p style="margin-top: 1rem; color: var(--color-gray);">Carregando diagrama...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="components-tab-1">
+                    <h3 style="margin-bottom: 1rem;">Sobre o Diagrama de Componentes</h3>
+                    <p style="color: var(--color-gray); line-height: 1.8; margin-bottom: 1rem;">
+                        O diagrama de componentes detalha os componentes principais da aplicação e como eles interagem entre si através de fluxos de dados.
+                    </p>
+                    <h4 style="margin: 1.5rem 0 1rem;">Fluxos Principais:</h4>
+                    <ul style="color: var(--color-gray); line-height: 1.8;">
+                        <li><strong>CRUD Flow:</strong> UI → BLoC → Repository → DAO → Database</li>
+                        <li><strong>Reactive Flow:</strong> Database → Stream → BLoC → State → UI</li>
+                        <li><strong>Navigation Flow:</strong> UI → GoRouter → UI</li>
+                        <li><strong>DI Flow:</strong> GetIt → All Components</li>
+                    </ul>
+                    <div style="background: #dbeafe; border-left: 4px solid var(--color-secondary); padding: 1rem; margin-top: 1.5rem; border-radius: 8px;">
+                        <strong><i class="fas fa-stream"></i> Streams Reativos:</strong>
+                        <p style="margin-top: 0.5rem; color: var(--color-gray);">
+                            O Database emite streams que são propagados até a UI, garantindo sincronização automática.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Class Diagram -->
+        <section id="diagram-classes">
+            <h2 style="margin-bottom: 2rem; color: var(--color-primary);">
+                <i class="fas fa-code" style="color: var(--color-accent);"></i>
+                Diagrama de Classes
+            </h2>
+            
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" onclick="switchTab('classes', 0)">
+                        <i class="fas fa-image"></i> Diagrama
+                    </button>
+                    <button class="tab-button" onclick="switchTab('classes', 1)">
+                        <i class="fas fa-info-circle"></i> Descrição
+                    </button>
+                </div>
+                
+                <div class="tab-content active" id="classes-tab-0">
+                    <div class="diagram-container">
+                        <img id="classes-diagram" src="" alt="Diagrama de Classes" style="display: none;">
+                        <div id="classes-loading" style="text-align: center; padding: 3rem;">
+                            <div class="loading" style="border-color: var(--color-gray); border-top-color: var(--color-primary);"></div>
+                            <p style="margin-top: 1rem; color: var(--color-gray);">Carregando diagrama...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="classes-tab-1">
+                    <h3 style="margin-bottom: 1rem;">Sobre o Diagrama de Classes</h3>
+                    <p style="color: var(--color-gray); line-height: 1.8; margin-bottom: 1rem;">
+                        O diagrama de classes mostra a estrutura detalhada das principais classes, incluindo propriedades, métodos e relacionamentos.
+                    </p>
+                    <h4 style="margin: 1.5rem 0 1rem;">Classes Principais:</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Categoria</th>
+                                <th>Classes</th>
+                                <th>Responsabilidade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-blue">Models</span></td>
+                                <td>Item, Product</td>
+                                <td>Entidades de dados com properties e business logic</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-green">BLoC</span></td>
+                                <td>ItemBloc, CrudBloc&lt;T&gt;</td>
+                                <td>Gerenciamento de estado e lógica de negócio</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-yellow">Repository</span></td>
+                                <td>ItemRepository, ProductRepository</td>
+                                <td>Abstração de acesso a dados</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-red">Database</span></td>
+                                <td>AppDatabase, DAOs</td>
+                                <td>Persistência com Drift ORM</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sequence Diagram -->
+        <section id="diagram-sequence">
+            <h2 style="margin-bottom: 2rem; color: var(--color-primary);">
+                <i class="fas fa-stream" style="color: var(--color-accent);"></i>
+                Diagrama de Sequência
+            </h2>
+            
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" onclick="switchTab('sequence', 0)">
+                        <i class="fas fa-image"></i> Diagrama
+                    </button>
+                    <button class="tab-button" onclick="switchTab('sequence', 1)">
+                        <i class="fas fa-info-circle"></i> Cenários
+                    </button>
+                </div>
+                
+                <div class="tab-content active" id="sequence-tab-0">
+                    <div class="diagram-container">
+                        <img id="sequence-diagram" src="" alt="Diagrama de Sequência" style="display: none;">
+                        <div id="sequence-loading" style="text-align: center; padding: 3rem;">
+                            <div class="loading" style="border-color: var(--color-gray); border-top-color: var(--color-primary);"></div>
+                            <p style="margin-top: 1rem; color: var(--color-gray);">Carregando diagrama...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="sequence-tab-1">
+                    <h3 style="margin-bottom: 1rem;">Cenários Documentados</h3>
+                    <p style="color: var(--color-gray); line-height: 1.8; margin-bottom: 1rem;">
+                        O diagrama de sequência mostra o fluxo temporal de 6 cenários CRUD completos:
+                    </p>
+                    <div style="display: grid; gap: 1rem;">
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                            <strong>1. Load Items</strong>
+                            <p style="color: var(--color-gray); margin-top: 0.5rem; font-size: 0.9rem;">
+                                Inicialização do app e carregamento de dados via stream reativo
+                            </p>
+                        </div>
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                            <strong>2. Create Item</strong>
+                            <p style="color: var(--color-gray); margin-top: 0.5rem; font-size: 0.9rem;">
+                                Criação de novo item com validação de formulário
+                            </p>
+                        </div>
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                            <strong>3. Update Item</strong>
+                            <p style="color: var(--color-gray); margin-top: 0.5rem; font-size: 0.9rem;">
+                                Edição de item existente com pré-preenchimento do formulário
+                            </p>
+                        </div>
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #ef4444;">
+                            <strong>4. Delete Item</strong>
+                            <p style="color: var(--color-gray); margin-top: 0.5rem; font-size: 0.9rem;">
+                                Exclusão individual com dialog de confirmação
+                            </p>
+                        </div>
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                            <strong>5. Delete All Items</strong>
+                            <p style="color: var(--color-gray); margin-top: 0.5rem; font-size: 0.9rem;">
+                                Exclusão em massa com confirmação
+                            </p>
+                        </div>
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #64748b;">
+                            <strong>6. Error Handling</strong>
+                            <p style="color: var(--color-gray); margin-top: 0.5rem; font-size: 0.9rem;">
+                                Tratamento de erros e feedback ao usuário
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technologies -->
+        <section id="technologies">
+            <h2 style="margin-bottom: 2rem; color: var(--color-primary);">
+                <i class="fas fa-tools" style="color: var(--color-accent);"></i>
+                Tecnologias e Dependências
+            </h2>
+            
+            <div class="diagram-grid">
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">
+                        <i class="fas fa-mobile-alt" style="color: var(--color-secondary);"></i>
+                        Framework
+                    </h3>
+                    <ul style="color: var(--color-gray); line-height: 1.8;">
+                        <li><strong>Flutter 3.24+</strong> - UI Framework</li>
+                        <li><strong>Dart 3.2+</strong> - Programming Language</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">
+                        <i class="fas fa-brain" style="color: var(--color-secondary);"></i>
+                        State Management
+                    </h3>
+                    <ul style="color: var(--color-gray); line-height: 1.8;">
+                        <li><strong>bloc ^9.1.0</strong> - BLoC Pattern</li>
+                        <li><strong>flutter_bloc ^9.1.0</strong> - Flutter Integration</li>
+                        <li><strong>equatable ^2.0.5</strong> - Value Equality</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">
+                        <i class="fas fa-database" style="color: var(--color-secondary);"></i>
+                        Database
+                    </h3>
+                    <ul style="color: var(--color-gray); line-height: 1.8;">
+                        <li><strong>drift ^2.16.0</strong> - ORM</li>
+                        <li><strong>sqlite3_flutter_libs</strong> - SQLite</li>
+                        <li><strong>build_runner</strong> - Code Generation</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">
+                        <i class="fas fa-sitemap" style="color: var(--color-secondary);"></i>
+                        Dependency Injection
+                    </h3>
+                    <ul style="color: var(--color-gray); line-height: 1.8;">
+                        <li><strong>get_it ^7.6.7</strong> - Service Locator</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">
+                        <i class="fas fa-route" style="color: var(--color-secondary);"></i>
+                        Navigation
+                    </h3>
+                    <ul style="color: var(--color-gray); line-height: 1.8;">
+                        <li><strong>go_router ^14.0.0</strong> - Type-safe Routing</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">
+                        <i class="fas fa-globe" style="color: var(--color-secondary);"></i>
+                        Localization
+                    </h3>
+                    <ul style="color: var(--color-gray); line-height: 1.8;">
+                        <li><strong>flutter_localizations</strong> - i18n</li>
+                        <li><strong>intl</strong> - Internationalization</li>
+                        <li>Suporte: EN, PT, ES</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Patterns -->
+        <section id="patterns">
+            <h2 style="margin-bottom: 2rem; color: var(--color-primary);">
+                <i class="fas fa-puzzle-piece" style="color: var(--color-accent);"></i>
+                Padrões de Projeto
+            </h2>
+            
+            <div class="card" style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1.5rem;">Padrões Implementados</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Padrão</th>
+                            <th>Implementação</th>
+                            <th>Benefício</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge badge-blue">BLoC Pattern</span></td>
+                            <td>ItemBloc, CrudBloc&lt;T&gt;</td>
+                            <td>Separação de lógica de negócio e UI</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-green">Repository</span></td>
+                            <td>ItemRepository, ProductRepository</td>
+                            <td>Abstração de fonte de dados</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-yellow">Factory</span></td>
+                            <td>GetIt registerFactory</td>
+                            <td>Criação de instâncias sob demanda</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-red">Singleton</span></td>
+                            <td>AppDatabase, Repositories</td>
+                            <td>Instância única compartilhada</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-blue">Observer</span></td>
+                            <td>Streams (watchAll)</td>
+                            <td>Notificação automática de mudanças</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-green">State</span></td>
+                            <td>Sealed Classes (States)</td>
+                            <td>Type-safe state management</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-yellow">Command</span></td>
+                            <td>Sealed Classes (Events)</td>
+                            <td>Encapsulamento de ações</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">Clean Architecture Principles</h3>
+                <div style="display: grid; gap: 1rem; margin-top: 1.5rem;">
+                    <div style="display: flex; align-items: start; gap: 1rem;">
+                        <div style="min-width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #dbeafe; border-radius: 8px;">
+                            <i class="fas fa-arrow-right" style="color: var(--color-primary);"></i>
+                        </div>
+                        <div>
+                            <strong>Dependency Rule</strong>
+                            <p style="color: var(--color-gray); margin-top: 0.25rem; font-size: 0.9rem;">
+                                Dependências apontam sempre para dentro: Presentation → Logic → Data
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: start; gap: 1rem;">
+                        <div style="min-width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #dcfce7; border-radius: 8px;">
+                            <i class="fas fa-layer-group" style="color: #10b981;"></i>
+                        </div>
+                        <div>
+                            <strong>Separation of Concerns</strong>
+                            <p style="color: var(--color-gray); margin-top: 0.25rem; font-size: 0.9rem;">
+                                Cada camada tem responsabilidade única e bem definida
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: start; gap: 1rem;">
+                        <div style="min-width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #fef3c7; border-radius: 8px;">
+                            <i class="fas fa-exchange-alt" style="color: var(--color-accent);"></i>
+                        </div>
+                        <div>
+                            <strong>Dependency Inversion</strong>
+                            <p style="color: var(--color-gray); margin-top: 0.25rem; font-size: 0.9rem;">
+                                Abstrações não dependem de detalhes, detalhes dependem de abstrações
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: start; gap: 1rem;">
+                        <div style="min-width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #fee2e2; border-radius: 8px;">
+                            <i class="fas fa-check-circle" style="color: #ef4444;"></i>
+                        </div>
+                        <div>
+                            <strong>Single Responsibility</strong>
+                            <p style="color: var(--color-gray); margin-top: 0.25rem; font-size: 0.9rem;">
+                                Cada classe tem uma única razão para mudar
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Usage Guide -->
+        <section id="guide">
+            <h2 style="margin-bottom: 2rem; color: var(--color-primary);">
+                <i class="fas fa-book" style="color: var(--color-accent);"></i>
+                Guia de Uso
+            </h2>
+            
+            <div class="card" style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">Como Visualizar os Diagramas</h3>
+                <p style="color: var(--color-gray); line-height: 1.8; margin-bottom: 1rem;">
+                    Os diagramas PlantUML podem ser visualizados de várias formas:
+                </p>
+                
+                <div style="display: grid; gap: 1.5rem; margin-top: 1.5rem;">
+                    <div>
+                        <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;">
+                            <i class="fas fa-globe"></i> Opção 1: Online (Mais Rápido)
+                        </h4>
+                        <ol style="color: var(--color-gray); line-height: 1.8; margin-left: 1.5rem;">
+                            <li>Acesse: <a href="http://www.plantuml.com/plantuml/uml/" target="_blank">http://www.plantuml.com/plantuml/uml/</a></li>
+                            <li>Cole o conteúdo do arquivo <code>.puml</code></li>
+                            <li>Visualize instantaneamente</li>
+                        </ol>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;">
+                            <i class="fas fa-code"></i> Opção 2: VS Code (Recomendado)
+                        </h4>
+                        <ol style="color: var(--color-gray); line-height: 1.8; margin-left: 1.5rem;">
+                            <li>Instale a extensão: <strong>PlantUML</strong> (jebbs.plantuml)</li>
+                            <li>Instale Java (requisito do PlantUML)</li>
+                            <li>Abra o arquivo <code>.puml</code> no VS Code</li>
+                            <li>Pressione <kbd>Alt + D</kbd> para preview</li>
+                        </ol>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;">
+                            <i class="fas fa-terminal"></i> Opção 3: Command Line
+                        </h4>
+                        <pre><code># Instalar PlantUML (macOS)
+brew install plantuml
+
+# Gerar PNG
+plantuml diagram.puml
+
+# Gerar SVG (vetorial)
+plantuml -tsvg diagram.puml</code></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">Estrutura do Projeto</h3>
+                <pre><code>docs/
+└── uml/
+    ├── 01_package_diagram.puml
+    ├── 02_component_diagram.puml
+    ├── 03_class_diagram.puml
+    ├── 04_sequence_diagram.puml
+    └── README.md</code></pre>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer style="margin-top: 4rem; padding: 2rem 0; border-top: 2px solid #e2e8f0; text-align: center;">
+            <div style="color: var(--color-gray); margin-bottom: 1rem;">
+                <p style="font-size: 0.9rem;">
+                    <strong>App CRUD BLoC</strong> - Documentação Técnica v1.0.0
+                </p>
+                <p style="font-size: 0.875rem; margin-top: 0.5rem;">
+                    Desenvolvido por <strong>Jhoni Eldor Schulz</strong>
+                </p>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                <a href="https://github.com/jhonieldorschulz/app_crud_bloc" target="_blank" style="color: var(--color-gray);">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+                <span style="color: #e2e8f0;">|</span>
+                <a href="mailto:jhonieldorschulz@gmail.com" style="color: var(--color-gray);">
+                    <i class="fas fa-envelope"></i> Email
+                </a>
+            </div>
+            <p style="font-size: 0.75rem; color: var(--color-gray); margin-top: 1.5rem;">
+                Última atualização: Dezembro 2024
+            </p>
+        </footer>
+    </main>
+
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#3b82f6',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#2563eb',
+                lineColor: '#64748b',
+                secondaryColor: '#10b981',
+                tertiaryColor: '#f59e0b',
+            }
+        });
+
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+
+        // Navigation highlighting
+        const navItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('section[id]');
+
+        function highlightNav() {
+            const scrollPos = window.scrollY + 100;
+            
+            sections.forEach(section => {
+                const top = section.offsetTop;
+                const height = section.offsetHeight;
+                const id = section.getAttribute('id');
+                
+                if (scrollPos >= top && scrollPos < top + height) {
+                    navItems.forEach(item => {
+                        item.classList.remove('active');
+                        if (item.getAttribute('href') === `#${id}`) {
+                            item.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightNav);
+
+        // Tab switching
+        function switchTab(section, index) {
+            const buttons = document.querySelectorAll(`#${section}-tab-${index}`).length > 0 
+                ? document.querySelectorAll(`[onclick*="${section}"]`)
+                : [];
+            const contents = document.querySelectorAll(`[id^="${section}-tab-"]`);
+            
+            buttons.forEach((btn, i) => {
+                if (i === index) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            contents.forEach((content, i) => {
+                if (i === index) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        }
+
+        // PlantUML diagram rendering
+        function renderPlantUMLDiagram(diagramId, plantUMLCode) {
+            const encoded = plantumlEncoder.encode(plantUMLCode);
+            const url = `http://www.plantuml.com/plantuml/png/${encoded}`;
+            
+            const img = document.getElementById(`${diagramId}-diagram`);
+            const loading = document.getElementById(`${diagramId}-loading`);
+            
+            img.onload = () => {
+                loading.style.display = 'none';
+                img.style.display = 'block';
+            };
+            
+            img.onerror = () => {
+                loading.innerHTML = '<p style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar diagrama. Verifique sua conexão.</p>';
+            };
+            
+            img.src = url;
+        }
+
+        // Load diagrams (simplified versions for demo)
+        const packagesUML = `@startuml
+!theme blueprint
+title Diagrama de Pacotes
+
+package "presentation" {
+  [Screens]
+  [Widgets]
+}
+
+package "logic" {
+  [BLoCs]
+  [Cubits]
+}
+
+package "data" {
+  [Database]
+  [Repositories]
+}
+
+package "core" {
+  [DI]
+  [Router]
+}
+
+presentation --> logic
+logic --> data
+core --> data
+@enduml`;
+
+        const componentsUML = `@startuml
+!theme blueprint
+title Diagrama de Componentes
+
+component "UI Layer" {
+  [ItemListScreen]
+  [ProductListScreen]
+}
+
+component "BLoC Layer" {
+  [ItemBloc]
+  [CrudBloc]
+}
+
+component "Data Layer" {
+  [Repository]
+  [Database]
+}
+
+[ItemListScreen] --> [ItemBloc]
+[ItemBloc] --> [Repository]
+[Repository] --> [Database]
+@enduml`;
+
+        const classesUML = `@startuml
+!theme blueprint
+title Diagrama de Classes (Simplificado)
+
+class Item {
+  +int id
+  +String title
+  +String description
+}
+
+class ItemBloc {
+  -ItemRepository repository
+  +void add(event)
+}
+
+class ItemRepository {
+  +Future<List<Item>> getAll()
+  +Future<void> create(Item)
+}
+
+ItemBloc --> ItemRepository
+ItemRepository --> Item
+@enduml`;
+
+        const sequenceUML = `@startuml
+!theme blueprint
+title Fluxo de Criação de Item
+
+actor User
+participant UI
+participant BLoC
+participant Repository
+database Database
+
+User -> UI: Tap "Create"
+UI -> BLoC: CreateItemEvent
+BLoC -> Repository: create(item)
+Repository -> Database: INSERT
+Database --> Repository: success
+Repository --> BLoC: success
+BLoC --> UI: ItemSuccess
+UI --> User: Show confirmation
+@enduml`;
+
+        // Render all diagrams
+        setTimeout(() => {
+            renderPlantUMLDiagram('packages', packagesUML);
+            renderPlantUMLDiagram('components', componentsUML);
+            renderPlantUMLDiagram('classes', classesUML);
+            renderPlantUMLDiagram('sequence', sequenceUML);
+        }, 500);
+
+        // Download PlantUML function
+        function downloadPlantUML(type) {
+            const codes = {
+                'packages': packagesUML,
+                'components': componentsUML,
+                'classes': classesUML,
+                'sequence': sequenceUML
+            };
+            
+            const blob = new Blob([codes[type]], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${type}_diagram.puml`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Close mobile menu
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('open');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

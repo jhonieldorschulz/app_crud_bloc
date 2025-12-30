@@ -1,0 +1,267 @@
+@startuml app_crud_bloc_package_diagram
+!theme blueprint
+title Diagrama de Pacotes - App CRUD BLoC\nArquitetura Clean Architecture com Flutter
+
+' ============================================
+' CAMADA DE APRESENTAÇÃO (Presentation Layer)
+' ============================================
+package "presentation" <<Folder>> #LightBlue {
+  package "screens" <<Folder>> {
+    package "item" <<Folder>> {
+      [ItemListScreen]
+      [ItemDetailScreen]
+      [ItemFormScreen]
+    }
+    
+    package "product" <<Folder>> {
+      [ProductListScreen]
+      [ProductDetailScreen]
+      [ProductFormScreen]
+    }
+    
+    package "home" <<Folder>> {
+      [HomeScreen]
+    }
+    
+    package "settings" <<Folder>> {
+      [SettingsScreen]
+    }
+    
+    package "widgets" <<Folder>> {
+      [AppNavigationDrawer]
+      [CommonWidgets]
+    }
+  }
+}
+
+' ============================================
+' CAMADA DE LÓGICA (Logic Layer / BLoC)
+' ============================================
+package "logic" <<Folder>> #LightGreen {
+  package "item" <<Folder>> {
+    [ItemBloc]
+    [ItemEvent]
+    [ItemState]
+    [ItemListCubit]
+    [ItemListState]
+  }
+  
+  package "product" <<Folder>> {
+    [ProductListCubit]
+    [ProductListState]
+  }
+  
+  package "locale" <<Folder>> {
+    [LocaleBloc]
+    [LocaleEvent]
+    [LocaleState]
+  }
+  
+  package "theme" <<Folder>> {
+    [ThemeBloc]
+    [ThemeEvent]
+    [ThemeState]
+  }
+}
+
+' ============================================
+' CAMADA DE DADOS (Data Layer)
+' ============================================
+package "data" <<Folder>> #LightYellow {
+  package "database" <<Folder>> {
+    [AppDatabase]
+    [app_database.g.dart] #LightGray
+  }
+  
+  package "dao" <<Folder>> {
+    [ItemsDao]
+    [ProductsDao]
+  }
+  
+  package "model" <<Folder>> {
+    package "item" <<Folder>> {
+      [ItemTable]
+      [Item]
+      [ItemExtensions]
+    }
+    
+    package "product" <<Folder>> {
+      [ProductTable]
+      [Product]
+      [ProductExtensions]
+    }
+  }
+  
+  package "repositories" <<Folder>> {
+    [ItemRepository]
+    [ProductRepository]
+  }
+}
+
+' ============================================
+' CAMADA CORE (Infraestrutura)
+' ============================================
+package "core" <<Folder>> #LightCoral {
+  package "di" <<Folder>> {
+    [InjectionContainer]
+    note right of [InjectionContainer]
+      **GetIt DI**
+      - Singletons
+      - Factories
+      - Lazy registration
+    end note
+  }
+  
+  package "routing" <<Folder>> {
+    [AppRouter]
+    [RouteNames]
+    note right of [AppRouter]
+      **GoRouter**
+      - Type-safe routes
+      - Deep linking
+      - Path parameters
+    end note
+  }
+  
+  package "theme" <<Folder>> {
+    [AppTheme]
+    [ColorSchemes]
+  }
+  
+  package "base" <<Folder>> {
+    [CrudBloc]
+    [CrudEvent]
+    [CrudState]
+    note right of [CrudBloc]
+      **Generic CRUD BLoC**
+      Reutilizável para
+      Item e Product
+    end note
+  }
+}
+
+' ============================================
+' LOCALIZAÇÃO (L10n)
+' ============================================
+package "l10n" <<Folder>> #Lavender {
+  [app_en.arb]
+  [app_pt.arb]
+  [app_es.arb]
+  [AppLocalizations] #LightGray
+  note right of [AppLocalizations]
+    **Gerado automaticamente**
+    flutter gen-l10n
+  end note
+}
+
+' ============================================
+' DEPENDÊNCIAS EXTERNAS
+' ============================================
+package "External Libraries" <<Cloud>> #WhiteSmoke {
+  [flutter_bloc]
+  [get_it]
+  [go_router]
+  [drift]
+  [sqlite3]
+  [shared_preferences]
+  [equatable]
+}
+
+' ============================================
+' RELACIONAMENTOS ENTRE PACOTES
+' ============================================
+
+' Presentation → Logic
+presentation ..> logic : uses
+[ItemListScreen] --> [ItemBloc]
+[ItemListScreen] --> [ItemListCubit]
+[ProductListScreen] --> [CrudBloc]
+[ProductListScreen] --> [ProductListCubit]
+[HomeScreen] --> [CrudBloc]
+[SettingsScreen] --> [LocaleBloc]
+[SettingsScreen] --> [ThemeBloc]
+
+' Logic → Data
+logic ..> data : uses
+[ItemBloc] --> [ItemRepository]
+[CrudBloc] --> [ProductRepository]
+[CrudBloc] --> [ItemRepository]
+
+' Data → Core (Database)
+data ..> core : uses
+[ItemRepository] --> [AppDatabase]
+[ProductRepository] --> [AppDatabase]
+[ItemsDao] --> [AppDatabase]
+[ProductsDao] --> [AppDatabase]
+
+' Core → External
+core ..> "External Libraries" : depends on
+[InjectionContainer] --> [get_it]
+[AppRouter] --> [go_router]
+[AppDatabase] --> [drift]
+[AppDatabase] --> [sqlite3]
+
+' Logic → Core
+logic ..> core : uses
+[ItemBloc] --> [CrudBloc]
+[LocaleBloc] --> [shared_preferences]
+[ThemeBloc] --> [shared_preferences]
+
+' Presentation → Core
+presentation ..> core : uses
+[ItemListScreen] --> [AppRouter]
+[ItemListScreen] --> [AppTheme]
+[AppNavigationDrawer] --> [RouteNames]
+
+' Presentation → L10n
+presentation ..> l10n : uses
+[ItemListScreen] --> [AppLocalizations]
+[ProductListScreen] --> [AppLocalizations]
+[HomeScreen] --> [AppLocalizations]
+
+' Code Generation Dependencies
+[AppDatabase] ..> [app_database.g.dart] : generates
+[app_en.arb] ..> [AppLocalizations] : generates
+[app_pt.arb] ..> [AppLocalizations] : generates
+[app_es.arb] ..> [AppLocalizations] : generates
+
+' ============================================
+' LEGENDAS
+' ============================================
+legend right
+  |= Color |= Significado |
+  | <#LightBlue> | Presentation Layer |
+  | <#LightGreen> | Logic Layer (BLoC) |
+  | <#LightYellow> | Data Layer |
+  | <#LightCoral> | Core / Infrastructure |
+  | <#Lavender> | Localization |
+  | <#WhiteSmoke> | External Libraries |
+  | <#LightGray> | Generated Code |
+  
+  **Dependency Rule:**
+  Presentation → Logic → Data
+  (dependências apontam para dentro)
+end legend
+
+note as ArchitectureNote
+  **Clean Architecture com Flutter**
+  
+  **3 Camadas Principais:**
+  1. Presentation: UI + Navigation
+  2. Logic: BLoC + State Management
+  3. Data: Database + Repositories
+  
+  **Princípios:**
+  - Dependency Inversion
+  - Single Responsibility
+  - Open/Closed Principle
+  - Interface Segregation
+  
+  **Patterns:**
+  - BLoC Pattern (Business Logic Component)
+  - Repository Pattern
+  - Dependency Injection (GetIt)
+  - Factory Pattern
+end note
+
+@enduml

@@ -1,0 +1,426 @@
+@startuml app_crud_bloc_sequence_diagram
+!theme blueprint
+title Diagrama de Sequência - Fluxo CRUD Completo\nItem Creation, Reading, Update and Delete
+
+actor User as user
+participant "ItemListScreen" as screen
+participant "ItemBloc" as bloc
+participant "ItemRepository" as repo
+participant "ItemsDao" as dao
+database "SQLite\nDatabase" as db
+participant "StreamSubscription" as stream
+
+' ============================================
+' CENÁRIO 1: LOAD ITEMS (App Start)
+' ============================================
+group Load Items (App Initialization)
+  user -> screen : App opens
+  activate screen
+  
+  screen -> bloc : add(LoadItemsEvent)
+  activate bloc
+  
+  bloc -> repo : watchAll()
+  activate repo
+  
+  repo -> dao : watchAllItems()
+  activate dao
+  
+  dao -> db : SELECT * FROM items
+  activate db
+  
+  db --> dao : List<ItemData>
+  deactivate db
+  
+  dao --> repo : Stream<List<Item>>
+  deactivate dao
+  
+  repo --> bloc : Stream<List<Item>>
+  deactivate repo
+  
+  bloc -> stream : listen to stream
+  activate stream
+  
+  stream --> bloc : List<Item> data
+  
+  bloc -> bloc : emit(ItemLoading)
+  bloc -> bloc : emit(ItemLoaded(items))
+  
+  bloc --> screen : ItemLoaded state
+  deactivate bloc
+  
+  screen -> screen : BlocBuilder rebuilds
+  screen --> user : Display items list
+  deactivate screen
+end
+
+|||
+
+' ============================================
+' CENÁRIO 2: CREATE ITEM
+' ============================================
+group Create New Item
+  user -> screen : Tap FAB (+)
+  activate screen
+  
+  screen -> screen : Navigate to\nItemFormScreen
+  screen --> user : Show form
+  deactivate screen
+  
+  |||
+  
+  user -> screen : Fill form\n(title, description)
+  activate screen
+  
+  user -> screen : Tap "Save"
+  
+  screen -> screen : Validate form
+  alt Validation fails
+    screen --> user : Show error messages
+  else Validation success
+    screen -> bloc : add(CreateItemEvent(item))
+    activate bloc
+    
+    bloc -> bloc : emit(ItemLoading)
+    
+    bloc -> repo : create(item)
+    activate repo
+    
+    repo -> dao : insertItem(item)
+    activate dao
+    
+    dao -> db : INSERT INTO items\nVALUES (...)
+    activate db
+    
+    db --> dao : int rowId (success)
+    deactivate db
+    
+    dao --> repo : int rowId
+    deactivate dao
+    
+    repo --> bloc : int rowId
+    deactivate repo
+    
+    bloc -> bloc : emit(ItemSuccess("Item created"))
+    
+    bloc --> screen : ItemSuccess state
+    deactivate bloc
+    
+    ' Reactive update via stream
+    db ..> dao : Stream emits update
+    activate dao
+    dao ..> repo : Forward update
+    activate repo
+    repo ..> bloc : New items list
+    activate bloc
+    bloc -> bloc : emit(ItemLoaded(updatedList))
+    bloc ..> screen : ItemLoaded state
+    deactivate bloc
+    deactivate repo
+    deactivate dao
+    
+    screen -> screen : Show SnackBar\n"Item created successfully"
+    screen -> screen : Navigate back\nto list
+    screen --> user : Show updated list
+    deactivate screen
+  end
+end
+
+|||
+
+' ============================================
+' CENÁRIO 3: UPDATE ITEM
+' ============================================
+group Update Existing Item
+  user -> screen : Tap Edit icon\non item card
+  activate screen
+  
+  screen -> screen : Navigate to\nItemFormScreen(id: 123)
+  
+  screen -> bloc : add(LoadItemByIdEvent(123))
+  activate bloc
+  
+  bloc -> repo : getById(123)
+  activate repo
+  
+  repo -> dao : getItemById(123)
+  activate dao
+  
+  dao -> db : SELECT * FROM items\nWHERE id = 123
+  activate db
+  
+  db --> dao : ItemData
+  deactivate db
+  
+  dao --> repo : Item
+  deactivate dao
+  
+  repo --> bloc : Item
+  deactivate repo
+  
+  bloc -> bloc : emit(ItemSingle(item))
+  
+  bloc --> screen : ItemSingle state
+  deactivate bloc
+  
+  screen -> screen : Pre-fill form\nwith item data
+  screen --> user : Show pre-filled form
+  deactivate screen
+  
+  |||
+  
+  user -> screen : Modify data
+  activate screen
+  user -> screen : Tap "Save"
+  
+  screen -> bloc : add(UpdateItemEvent(updatedItem))
+  activate bloc
+  
+  bloc -> bloc : emit(ItemLoading)
+  
+  bloc -> repo : update(updatedItem)
+  activate repo
+  
+  repo -> dao : updateItem(updatedItem)
+  activate dao
+  
+  dao -> db : UPDATE items\nSET title = ?, ...\nWHERE id = ?
+  activate db
+  
+  db --> dao : bool success
+  deactivate db
+  
+  dao --> repo : bool success
+  deactivate dao
+  
+  repo --> bloc : bool success
+  deactivate repo
+  
+  bloc -> bloc : emit(ItemSuccess("Item updated"))
+  
+  bloc --> screen : ItemSuccess state
+  deactivate bloc
+  
+  ' Reactive update
+  db ..> dao : Stream emits update
+  activate dao
+  dao ..> repo : Forward
+  activate repo
+  repo ..> bloc : Updated list
+  activate bloc
+  bloc -> bloc : emit(ItemLoaded(list))
+  bloc ..> screen : ItemLoaded
+  deactivate bloc
+  deactivate repo
+  deactivate dao
+  
+  screen -> screen : Show SnackBar
+  screen -> screen : Navigate back
+  screen --> user : Show updated list
+  deactivate screen
+end
+
+|||
+
+' ============================================
+' CENÁRIO 4: DELETE ITEM
+' ============================================
+group Delete Item
+  user -> screen : Tap Delete icon
+  activate screen
+  
+  screen -> screen : Show confirmation\ndialog
+  screen --> user : "Confirm delete?"
+  deactivate screen
+  
+  |||
+  
+  user -> screen : Tap "Delete"
+  activate screen
+  
+  screen -> bloc : add(DeleteItemEvent(id: 123))
+  activate bloc
+  
+  bloc -> bloc : emit(ItemLoading)
+  
+  bloc -> repo : delete(123)
+  activate repo
+  
+  repo -> dao : deleteItem(123)
+  activate dao
+  
+  dao -> db : DELETE FROM items\nWHERE id = 123
+  activate db
+  
+  db --> dao : int rowsAffected
+  deactivate db
+  
+  dao --> repo : int rowsAffected
+  deactivate dao
+  
+  repo --> bloc : int rowsAffected
+  deactivate repo
+  
+  bloc -> bloc : emit(ItemSuccess("Item deleted"))
+  
+  bloc --> screen : ItemSuccess state
+  deactivate bloc
+  
+  ' Reactive update
+  db ..> dao : Stream emits
+  activate dao
+  dao ..> repo : Forward
+  activate repo
+  repo ..> bloc : Updated list\n(without deleted item)
+  activate bloc
+  bloc -> bloc : emit(ItemLoaded(list))
+  bloc ..> screen : ItemLoaded
+  deactivate bloc
+  deactivate repo
+  deactivate dao
+  
+  screen -> screen : Dismiss dialog
+  screen -> screen : Show SnackBar\n"Item deleted"
+  screen --> user : Show updated list
+  deactivate screen
+end
+
+|||
+
+' ============================================
+' CENÁRIO 5: DELETE ALL ITEMS
+' ============================================
+group Delete All Items
+  user -> screen : Tap Delete Sweep icon
+  activate screen
+  
+  screen -> screen : Show confirmation\ndialog
+  screen --> user : "Delete all items?"
+  deactivate screen
+  
+  |||
+  
+  user -> screen : Tap "Delete All"
+  activate screen
+  
+  screen -> bloc : add(DeleteAllItemsEvent)
+  activate bloc
+  
+  bloc -> bloc : emit(ItemLoading)
+  
+  bloc -> repo : deleteAll()
+  activate repo
+  
+  repo -> dao : deleteAllItems()
+  activate dao
+  
+  dao -> db : DELETE FROM items
+  activate db
+  
+  db --> dao : int rowsAffected
+  deactivate db
+  
+  dao --> repo : int rowsAffected
+  deactivate dao
+  
+  repo --> bloc : int rowsAffected
+  deactivate repo
+  
+  bloc -> bloc : emit(ItemSuccess("All items deleted"))
+  
+  bloc --> screen : ItemSuccess state
+  deactivate bloc
+  
+  ' Reactive update
+  db ..> dao : Stream emits
+  activate dao
+  dao ..> repo : Forward
+  activate repo
+  repo ..> bloc : Empty list []
+  activate bloc
+  bloc -> bloc : emit(ItemLoaded([]))
+  bloc ..> screen : ItemLoaded (empty)
+  deactivate bloc
+  deactivate repo
+  deactivate dao
+  
+  screen -> screen : Dismiss dialog
+  screen -> screen : Show SnackBar
+  screen -> screen : Show empty state
+  screen --> user : "No items yet"
+  deactivate screen
+end
+
+|||
+
+' ============================================
+' CENÁRIO 6: ERROR HANDLING
+' ============================================
+group Error Handling (Example: Database Error)
+  user -> screen : Tap Save (invalid data)
+  activate screen
+  
+  screen -> bloc : add(CreateItemEvent(item))
+  activate bloc
+  
+  bloc -> repo : create(item)
+  activate repo
+  
+  repo -> dao : insertItem(item)
+  activate dao
+  
+  dao -> db : INSERT INTO items...
+  activate db
+  
+  db --> dao : ❌ Exception:\nConstraint violation
+  deactivate db
+  
+  dao --> repo : ❌ Exception
+  deactivate dao
+  
+  repo --> bloc : ❌ Exception
+  deactivate repo
+  
+  bloc -> bloc : emit(ItemError("Failed to create item"))
+  
+  bloc --> screen : ItemError state
+  deactivate bloc
+  
+  screen -> screen : Show error SnackBar\n(red background)
+  screen --> user : "Error: Failed to create item"
+  deactivate screen
+end
+
+' ============================================
+' NOTAS
+' ============================================
+note over user, db
+  **Padrões Utilizados:**
+  
+  1. **BLoC Pattern**: Events → BLoC → States
+  2. **Repository Pattern**: Abstração da fonte de dados
+  3. **Reactive Streams**: Database changes trigger UI updates automatically
+  4. **Error Handling**: Try-catch em cada camada
+  5. **User Feedback**: SnackBars para sucesso/erro
+  
+  **Fluxo de Dados:**
+  - User Action → Event → BLoC → Repository → DAO → Database
+  - Database Change → Stream → BLoC → State → UI Update
+end note
+
+note over stream
+  **Reactive Programming**
+  
+  Stream subscription:
+  - watchAll() retorna Stream<List<Item>>
+  - BLoC escuta stream continuamente
+  - Qualquer mudança no DB emite novo evento
+  - UI atualiza automaticamente
+  
+  Benefícios:
+  - UI sempre sincronizada
+  - Não precisa refresh manual
+  - Múltiplas telas podem observar mesma stream
+end note
+
+@enduml

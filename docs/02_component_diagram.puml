@@ -1,0 +1,380 @@
+@startuml app_crud_bloc_component_diagram
+!theme blueprint
+title Diagrama de Componentes - App CRUD BLoC\nFluxo de Dados e Interações entre Componentes
+
+' ============================================
+' APRESENTAÇÃO (UI)
+' ============================================
+package "Presentation Layer" {
+  component "ItemListScreen" as ItemList {
+    [Widget Tree]
+    [BlocBuilder]
+    [BlocListener]
+  }
+  
+  component "ProductListScreen" as ProductList {
+    [Widget Tree]
+    [BlocBuilder]
+    [BlocListener]
+  }
+  
+  component "HomeScreen" as Home {
+    [Dashboard Cards]
+    [Statistics]
+  }
+  
+  component "ItemFormScreen" as ItemForm {
+    [Form Validation]
+    [TextFields]
+  }
+  
+  component "AppNavigationDrawer" as Drawer {
+    [Menu Items]
+    [Theme Toggle]
+  }
+}
+
+' ============================================
+' GERENCIAMENTO DE ESTADO (BLoC)
+' ============================================
+package "State Management Layer" {
+  component "ItemBloc" as ItemBLoC {
+    [Events Handler]
+    [State Emitter]
+    database "Current State"
+  }
+  
+  component "CrudBloc<Product>" as ProductBLoC {
+    [Generic Events]
+    [Generic States]
+    database "Product State"
+  }
+  
+  component "ItemListCubit" as ItemListCubit {
+    [Search Logic]
+    [Filter Logic]
+    database "UI State"
+  }
+  
+  component "ProductListCubit" as ProductListCubit {
+    [Search Logic]
+    [Filter Logic]
+    database "UI State"
+  }
+  
+  component "LocaleBloc" as LocaleBLoC {
+    [Language Switch]
+    [Persistence]
+  }
+  
+  component "ThemeBloc" as ThemeBLoC {
+    [Theme Toggle]
+    [Persistence]
+  }
+}
+
+' ============================================
+' ACESSO A DADOS (Repository Pattern)
+' ============================================
+package "Data Access Layer" {
+  component "ItemRepository" as ItemRepo {
+    interface "CRUD Operations" as ItemCRUD
+    [Create]
+    [Read]
+    [Update]
+    [Delete]
+    [Watch Stream]
+  }
+  
+  component "ProductRepository" as ProductRepo {
+    interface "CRUD Operations" as ProductCRUD
+    [Create]
+    [Read]
+    [Update]
+    [Delete]
+    [Watch Stream]
+  }
+  
+  component "ItemsDao" as ItemsDAO {
+    [SQL Queries]
+    [Type-safe API]
+  }
+  
+  component "ProductsDao" as ProductsDAO {
+    [SQL Queries]
+    [Type-safe API]
+  }
+}
+
+' ============================================
+' BANCO DE DADOS (Drift ORM)
+' ============================================
+database "SQLite Database" {
+  component "AppDatabase" as DB {
+    [Items Table]
+    [Products Table]
+    [Migrations]
+    [Transactions]
+  }
+}
+
+' ============================================
+' INJEÇÃO DE DEPENDÊNCIAS
+' ============================================
+component "Dependency Injection Container" as GetIt {
+  [Service Locator]
+  collections "Singletons" as Singletons
+  collections "Factories" as Factories
+}
+
+' ============================================
+' ROTEAMENTO
+' ============================================
+component "GoRouter" as Router {
+  [Route Configuration]
+  [Navigation Guards]
+  [Deep Links]
+  [Path Parameters]
+}
+
+' ============================================
+' LOCALIZAÇÃO
+' ============================================
+component "Localization System" as L10n {
+  [AppLocalizations]
+  [ARB Files]
+  [Language Detector]
+}
+
+' ============================================
+' PERSISTÊNCIA LOCAL
+' ============================================
+storage "SharedPreferences" as Prefs {
+  [locale_key]
+  [theme_key]
+}
+
+' ============================================
+' FLUXO DE EVENTOS (ITEM)
+' ============================================
+
+' UI → BLoC (Events)
+ItemList --> ItemBLoC : "dispatch\nLoadItemsEvent"
+ItemForm --> ItemBLoC : "dispatch\nCreateItemEvent"
+ItemForm --> ItemBLoC : "dispatch\nUpdateItemEvent"
+
+' BLoC → Repository
+ItemBLoC --> ItemRepo : "call\ngetAll() / create()"
+
+' Repository → DAO
+ItemRepo --> ItemsDAO : "delegate\nCRUD operations"
+
+' DAO → Database
+ItemsDAO --> DB : "execute\nSQL queries"
+
+' Database → DAO (Stream)
+DB ..> ItemsDAO : "watchAll()\nStream<List<Item>>"
+
+' DAO → Repository (Stream)
+ItemsDAO ..> ItemRepo : "forward\nStream"
+
+' Repository → BLoC (Stream)
+ItemRepo ..> ItemBLoC : "emit\ndata updates"
+
+' BLoC → UI (States)
+ItemBLoC ..> ItemList : "notify\nItemLoaded state"
+
+' ============================================
+' FLUXO DE EVENTOS (PRODUCT)
+' ============================================
+
+' UI → BLoC
+ProductList --> ProductBLoC : "dispatch\nLoadAllEvent<Product>"
+
+' BLoC → Repository
+ProductBLoC --> ProductRepo : "call\ngetAll()"
+
+' Repository → DAO
+ProductRepo --> ProductsDAO : "delegate operations"
+
+' DAO → Database
+ProductsDAO --> DB : "query products"
+
+' Reactive Stream Back
+DB ..> ProductsDAO : "Stream<List<Product>>"
+ProductsDAO ..> ProductRepo : "forward"
+ProductRepo ..> ProductBLoC : "emit"
+ProductBLoC ..> ProductList : "ProductLoaded"
+
+' ============================================
+' FLUXO DE UI STATE (CUBITS)
+' ============================================
+
+' BLoC → Cubit (sincronização)
+ItemBLoC ..> ItemListCubit : "sync entities"
+ProductBLoC ..> ProductListCubit : "sync entities"
+
+' Cubit → UI
+ItemListCubit ..> ItemList : "filtered/searched\nresults"
+ProductListCubit ..> ProductList : "filtered/searched\nresults"
+
+' ============================================
+' FLUXO DE CONFIGURAÇÕES
+' ============================================
+
+' UI → Settings BLoCs
+Drawer --> ThemeBLoC : "ToggleThemeEvent"
+Drawer --> LocaleBLoC : "ChangeLocaleEvent"
+
+' Settings BLoCs → Persistence
+ThemeBLoC --> Prefs : "save theme"
+LocaleBLoC --> Prefs : "save locale"
+
+' Persistence → Settings BLoCs
+Prefs ..> ThemeBLoC : "load theme"
+Prefs ..> LocaleBLoC : "load locale"
+
+' Settings BLoCs → UI
+ThemeBLoC ..> ItemList : "theme update"
+LocaleBLoC ..> L10n : "locale update"
+L10n ..> ItemList : "translations"
+
+' ============================================
+' NAVEGAÇÃO
+' ============================================
+
+' UI → Router
+ItemList --> Router : "go('/item/:id')"
+Home --> Router : "go('/items')"
+Drawer --> Router : "go('/products')"
+
+' Router → UI
+Router ..> ItemForm : "navigate to\nform screen"
+
+' ============================================
+' INJEÇÃO DE DEPENDÊNCIAS
+' ============================================
+
+' GetIt provides instances
+GetIt ..> ItemBLoC : "provide\nItemBloc instance"
+GetIt ..> ProductBLoC : "provide\nCrudBloc<Product>"
+GetIt ..> ItemRepo : "provide\nItemRepository"
+GetIt ..> ProductRepo : "provide\nProductRepository"
+GetIt ..> DB : "provide\nAppDatabase (singleton)"
+
+' ============================================
+' NOTAS EXPLICATIVAS
+' ============================================
+
+note right of ItemBLoC
+  **Event → State Flow**
+  
+  Events:
+  - LoadItemsEvent
+  - CreateItemEvent
+  - UpdateItemEvent
+  - DeleteItemEvent
+  
+  States:
+  - ItemInitial
+  - ItemLoading
+  - ItemLoaded
+  - ItemError
+end note
+
+note right of ProductBLoC
+  **Generic CRUD BLoC**
+  
+  Usado por:
+  - Product
+  - Item (alternativo)
+  
+  Events:
+  - LoadAllEvent<T>
+  - CreateEvent<T>
+  - UpdateEvent<T>
+  - DeleteEvent<T>
+  
+  States:
+  - CrudLoading<T>
+  - CrudLoaded<T>
+  - CrudSuccess<T>
+  - CrudError<T>
+end note
+
+note right of ItemRepo
+  **Repository Pattern**
+  
+  Responsabilidades:
+  - Abstração do DAO
+  - Conversão de tipos
+  - Error handling
+  - Stream management
+  
+  Benefícios:
+  - Testabilidade
+  - Troca de fonte de dados
+  - Cache (futuro)
+end note
+
+note right of DB
+  **Drift ORM Features**
+  
+  - Type-safe queries
+  - Stream-based (reactive)
+  - Code generation
+  - Migrations
+  - Transactions
+  - Complex queries with joins
+  
+  Tables:
+  - Items (id, title, description, ...)
+  - Products (id, name, price, stock, ...)
+end note
+
+note bottom of GetIt
+  **Dependency Injection**
+  
+  Singletons:
+  - AppDatabase
+  - Repositories
+  - LocaleBloc
+  - ThemeBloc
+  
+  Factories:
+  - ItemBloc (nova instância por tela)
+  - CrudBloc<Product>
+  - Cubits
+end note
+
+note bottom of Router
+  **GoRouter Configuration**
+  
+  Routes:
+  - / (Home)
+  - /items (ItemList)
+  - /items/detail/:id
+  - /items/create
+  - /items/edit/:id
+  - /products (ProductList)
+  - /products/detail/:id
+  - /settings
+end note
+
+' ============================================
+' LEGENDA
+' ============================================
+legend right
+  |= Symbol |= Significado |
+  | → | Chamada síncrona / Dispatch event |
+  | ..> | Stream / Notificação assíncrona |
+  | -- | Dependência / Composição |
+  
+  **Fluxos Principais:**
+  1. **CRUD**: UI → BLoC → Repository → DAO → Database
+  2. **Reactive**: Database → DAO → Repository → BLoC → UI
+  3. **Navigation**: UI → GoRouter → UI
+  4. **DI**: GetIt → All Components
+end legend
+
+@enduml
